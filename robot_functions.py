@@ -7,7 +7,7 @@ from crate_rover_specs import *
 
 air_density = 1.225
 
-shaft_diameters = [0.006, 0.008, 0.010, 0.012, 0.014, 0.016, 0.018, 0.020]
+shaft_diameters = [0.006, 0.008, 0.010, 0.012, 0.015, 0.020]
 
 class Material:
     def __init__(self, name: str, yield_strength: float, shear_modulus: float):
@@ -25,7 +25,7 @@ class Engineering:
         return 1.25
 
     def safety_factor_structural() -> float:
-        return 2.0
+        return 1.25
 
 class Physics:
     def coefficient_of_aerodynamic_drag() -> float:
@@ -203,15 +203,17 @@ def minimum_diameter_for_solid_shaft(torque: float, maximum_shear_stress: float)
     # D = 1.72 (Tmax / τmax)^(1/3)
     return 1.72 * math.pow(torque / maximum_shear_stress, 1.0 / 3.0)
 
-def find_solid_shaft_diameter_for_torque(torque: float, maximum_deflection_in_degrees: float, yield_strength: float, shear_modulus: float) -> float:
+def find_solid_shaft_diameter_for_torque(torque: float, length: float, maximum_deflection_in_degrees: float, yield_strength: float, shear_modulus: float) -> float:
     selected_diameter = shaft_diameters[-1]
     for diameter in shaft_diameters:
         max_shear_stress = maximum_shear_stress(diameter / 2.0, 0.0, torque)
         if max_shear_stress > yield_strength:
+            # print(f'Yield strength fail - Diameter: {diameter} - max shear stress: {max_shear_stress}')
             continue
 
-        deflection = torsional_deflection_in_degrees_of_shaft(diameter / 2.0, 0.0, 1.0, shear_modulus, torque)
+        deflection = torsional_deflection_in_degrees_of_shaft(diameter / 2.0, 0.0, length, shear_modulus, torque)
         if deflection > maximum_deflection_in_degrees:
+            # print(f'Deflection fail - Diameter: {diameter} - deflection: {deflection}')
             continue
 
         selected_diameter = diameter
