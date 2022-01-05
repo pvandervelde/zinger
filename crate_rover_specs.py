@@ -120,7 +120,7 @@ def RoverSpecification() -> CrateRoverSpecifications:
 
     rover_wheel = RoverWheel(0.075)
     rover_chassis = RoverChassis(
-        BoundingBox(0.6, cargo.bounding_box.width_in_meters + 0.05, rover_wheel.radius_in_meters * 2 + 0.10),
+        BoundingBox(0.75, cargo.bounding_box.width_in_meters + 0.05, rover_wheel.radius_in_meters * 2 + 0.10),
         20.0,
         4,
         rover_wheel)
