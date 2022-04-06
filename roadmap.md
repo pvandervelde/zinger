@@ -14,6 +14,7 @@
   * learn electronics
   * Power & data
     * Distributed power architecture
+    * Mobility stop
   * Battery
 * Steering system MVP - 3
   * Build 4 steering units and connect them via a simple frame

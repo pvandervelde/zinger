@@ -38,7 +38,7 @@ The following are the must-have requirements for the rover.
    1) The rover will be able to navigate from its current position to the current
       location of the cargo. Path finding may be done either in advance or while moving.
    1) The rover will be able to pick up cargo from locations with a minimum usable area equivalent
-      to 150% of the size of the rover and the cargo combined.
+      to 100% of the size of the rover and the cargo combined.
    1) Once the cargo is loaded and secured the rover will be able to navigate to the destination
       location. Path finding may be done either in advance or while moving.
    1) The rover will be able to navigate tight turns
@@ -142,8 +142,10 @@ areas of risk, starting with the highest risk area.
     * Caster wheels for non-driven wheels
   * Will be using 4 identical wheels which minimizes the complications and cost. Additionally using
     four wheels provides a larger stability envelope.
-    * Diameter: **0.20 m**.
-    * Width: minimum **0.10 m**
+    * Diameter: **0.20 m** based on the idea that we want the rover to be able to traverse obstacles
+      of 10cm height, i.e. half the tire diameter.
+    * Width: minimum **0.10 m** based on the idea that we want enough surface area to distribute the
+      total weight of rover and cargo over a big enough area to reduce ground pressure.
 * Drive and steering
   * Requirements
     * Want to be able to turn around the rover center so that we take tight turns and reverse
