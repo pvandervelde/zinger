@@ -318,6 +318,10 @@ mechanics, electronics and software of the rover.
   * Response times for changes to goals etc.
 
 
+### Structure
+
+* The rover structure will consist of aluminium extrusions as they are easy to obtain, cut to length
+  and connect.
 
 ### Navigation
 
@@ -330,6 +334,17 @@ mechanics, electronics and software of the rover.
   * This could be especially important for cases where the rover is carrying an oversized load
 * Additionally when dealing with hills the decoupling could mean that we can keep the robot in the most
   stable position (e.g. front facing up hill) while still moving along the slope
+* High level commands for motors are normally a velocity and an angle / direction which are then translated into
+  rotational velocity and direction for the motors. However for a swerve drive we have more degrees of freedom so
+  the high level commands can specify a velocity vector (where is the rover going) and a 'pointing' vector (where
+  is the rover pointing). At a lower level this can be translated into a rotation and a velocity, combined with the
+  final pointing direction.
+  * From there we need to work out the rotational direction of each wheel, based on where we want to go and the
+    speed at which we want to change direction (steer in the same direction vs front and back steering in the
+    opposite direction)
+* Need trajectory planning - Create a path to the goal, but also deal with the need to smoothly change the wheel
+  speed and direction. Additionally for a swerve drive we also need to figure out what direction we need to face in
+  * Temporal planning of movement direction, rotations, and the direction the robot is facing
 
 ## Safety
 
@@ -397,6 +412,23 @@ mechanics, electronics and software of the rover.
       * A herringbone or helical gear would be most efficient but those are expensive
   * Use belts for the drive system and gears for the steering
   * Should really have a cover over the bottom so that we don't get dirt in the drive system
+* Wheels
+  * Will be using 4 identical wheels which minimizes the complications and cost. Additionally using
+    four wheels provides a larger stability envelope.
+    * Diameter: **0.20 m** based on the idea that we want the rover to be able to traverse obstacles
+      of 10cm height, i.e. half the tire diameter.
+    * Width: minimum **0.05 m** based on the idea that we want enough surface area to distribute the
+      total weight of rover and cargo over a big enough area to reduce ground pressure.
+* Drive and steering
+  * The rover will be steered and driven using a swerve drive, i.e. a drive system in which all
+    wheels are powered and all wheels are able to rotate 360 degrees infinitely. This provides the
+    maximum traction and controllability. The swerve drive provides the ability for the rover to
+    move in all directions. Finally all the wheel units are the same, thus allowing for a modular
+    build.
+* Suspension - Needed --> Because driving in outdoor terrain with a load
+* Power - The first version of the rover will be all electric
+* Motion control - The first version of the rover will be controlled by the user. No autonomous
+  drive will be provided.
 
 ## Software
 
@@ -546,17 +578,3 @@ not for other robots
 
 Improve the ratio between value and cost, either by reducing cost or improving value. Value can be carrying capacity,
 speed, battery life etc.
-
-### Navigation
-
-* High level commands for motors are normally a velocity and an angle / direction which are then translated into
-  rotational velocity and direction for the motors. However for a swerve drive we have more degrees of freedom so
-  the high level commands can specify a velocity vector (where is the rover going) and a 'pointing' vector (where
-  is the rover pointing). At a lower level this can be translated into a rotation and a velocity, combined with the
-  final pointing direction.
-  * From there we need to work out the rotational direction of each wheel, based on where we want to go and the
-    speed at which we want to change direction (steer in the same direction vs front and back steering in the
-    opposite direction)
-* Need trajectory planning - Create a path to the goal, but also deal with the need to smoothly change the wheel
-  speed and direction. Additionally for a swerve drive we also need to figure out what direction we need to face in
-  * Temporal planning of movement direction, rotations, and the direction the robot is facing
