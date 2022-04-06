@@ -47,9 +47,9 @@ The following are the must-have requirements for the rover.
    1) **Limitation:** Assume that the maximum velocity on flat ground will be no more than
       **2.0 m/s**. The velocity on sloped ground may be reduced.
    1) **Limitation:** Assume that the maximum slope angle for transports with the maximum weight
-      will be no more than **10 degrees**.
-   1) **Limitation:** The rover will not have a suspension system. Due to the low speed it is assumed
-      that suspension is not required.
+      will be no more than **15 degrees**.
+   1) **Limitation:** The rover will be consider having reached its destination if it is no more than
+      0.05 meters away from it.
 1) The rover will be able to communicate status and progress.
 
 1) The rover will be easy to construct and maintain
@@ -169,7 +169,7 @@ areas of risk, starting with the highest risk area.
     maximum traction and controllability. The swerve drive provides the ability for the rover to
     move in all directions. Finally all the wheel units are the same, thus allowing for a modular
     build.
-* Suspension - The first version of the rover will not have a suspension.
+* Suspension - ????
 * Power - The first version of the rover will be all electric
 * Motion control - The first version of the rover will be controlled by the user. No autonomous
   drive will be provided.
