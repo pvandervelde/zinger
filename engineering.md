@@ -58,6 +58,8 @@ less wear.
     * https://www.vexrobotics.com/versaplanetary.html
   * CVT is possible but for for the time being we don't care too much about efficiency. That will come later
 
+* taper lock bushing
+
 * Drive motor -> Power + speed + controller. Ideally fewer parts is better
 * Steering motor -> Power + accuracy. Ideally fewer parts is better
   * DC motor
@@ -144,6 +146,8 @@ less wear.
   * https://drive.google.com/file/d/1dXeNoHY7kYR1mJWzMM5BktA5nf9RgFMu/view
 * Testing
   * https://www.chiefdelphi.com/t/best-way-to-test-2910-module-swerve-drive-code/359248
+* SLAM / Mapping
+  * https://medium.com/robotics-weekends/2d-mapping-using-google-cartographer-and-rplidar-with-raspberry-pi-a94ce11e44c5
 * Misc
   * https://team900.org/labs/
 
@@ -154,6 +158,10 @@ less wear.
   * https://newsite.ctr-electronics.com/power-distribution-panel/
 * Wiring: https://www.firstinspires.org/sites/default/files/uploads/resource_library/ftc/robot-wiring-guide.pdf
 * Battery
+* Wiring for data
+  * Either EtherCAT or CAN. CAN seems to be the most widely supported and has great resilience against disturbances
+    * See: https://www.botblox.io/blogs/learn/what-s-the-best-communication-bus-for-robots-and-drones and others
+
 
 ## Steering system MVP - All units steering + frame to attach to
 
@@ -223,6 +231,11 @@ speed, battery life etc.
 
 * Brakes + hold power for on the hill / when loading
 * Suspension for individual wheels. At 4.0 m/s hitting anything will be nasty because the swing arms are large with heavy weights at the end (the wheels + motors)
+  * Telescopic drive shafts exist. We might be able to create something like that ourselves
+    * Could have a rectangular shaft inside another rectangular shaft with sliders. As long as there
+      are enough supports the torque should be transferred without issue. Also we don't necessarily care
+      a lot about the amount of sliding friction because the wheel assembly has some weight and we're not
+      expecting to have to change the ride height extremely quickly
 * System redundancy
 * Monitoring
 * Wheel slip detection
