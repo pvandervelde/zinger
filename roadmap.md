@@ -5,6 +5,15 @@ the areas with the highest risk are covered as early as possible in the design a
 process. The following is the current suggested design and implementation order that should reduce
 the project risks.
 
+
+
+WHAT IS THE EASIEST PROTOTYPE YOU CAN MAKE SO THAT YOU CAN SEE SOMETHING?
+
+--> MAYBE USE ROS AND SIMULATION?
+
+
+
+
 * Create a bench with a single cheap motor - Test driving via software
 
 * Create a bench with a single cheap motor rotating a structure - Test driving accuracy via software
