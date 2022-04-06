@@ -7,14 +7,10 @@ reduce the project risks.
 
 ## Goal
 
-To see progress as quickly as possible and constantly
+To see progress in high risk areas as quickly as possible and constantly
 
 ## Plan
 
-
---> WHAT IS THE EASIEST PROTOTYPE YOU CAN MAKE SO THAT YOU CAN SEE SOMETHING?
-
---> MAYBE USE ROS AND SIMULATION? **> for the software / sensors / goal reaching etc.
 
 Can use SCUTTLE for a lot of the software testing etc.
 
@@ -26,22 +22,29 @@ Can use SCUTTLE for a lot of the software testing etc.
   * Automation in order to test things
     * Compare velocity / acceleration / position
 
+* Odometry
+
 * Different path planning / navigation methods
   * Global planning methods
   * Local planning methods
   * Reactive planning
   * Determine what we want from a planning algorithm
-    * Work with the limitations of the rover (kintematics etc.)
+    * Work with the limitations of the rover (kinematics etc.)
     * Robust - Should be able to deal with unexpected obstacles etc.
     * Reliable - It should consistently get the robot to the goal
     * Adaptable - It should be able to adapt to changing conditions / environment
     * Efficient - It should be able to find the shortest path
 
+* SLAM using camera's
+
 * Trajectory planning with moving obstacles
   * Initially predictable path, both straight and curved
   * Then introduce random movements
 
-* Implement a bumper and ultrasound sensors to SCUTTLE
+* SLAM for SCUTTLE
+  * Implement a bumper
+  * Implement ultrasound sensors
+  * Add camera
 
 * Real-life navigation with SCUTTLE using ultrasound and bumpers
 
