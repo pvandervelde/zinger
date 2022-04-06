@@ -2,31 +2,139 @@
 
 The engineering document describes the choices made for the different parts of the rover.
 
+## Translating the requirements
+
+In order to determine the shape, size and exact characteristics of the rover we first need to
+translate the requirements into more concrete information.
+
+### Requirement: Cooperating with human operators
+
+The high level requirement is:
+
+    The CrateRover is designed to cooperate with human operators. As such it will behave in ways
+    that prevent any damage to humans, animals, property and the cargo.
+
+Translating this requirement leads to the following engineering demands:
+
+* The rover needs to have sensors that can detect stationary and moving obstacles
+* The rover should be able to predict with some accuracy the path that will be taken by moving
+  obstacles and use this information for obstacle avoidance and trajectory planning
+* The rover should be able to adapt the trajectory due to changes in directions of obstacles
+* The rover will provide safe methods of stopping the rover, either remotely or up close
+
+### Requirement: Task planning
+
+The high level requirement is:
+
+    The rover will be able to receive and action requests to take given cargo from one location
+    to another. The request may come via a number of channels, some of those using natural language.
+
+Translating this requirement leads to the following engineering demands:
+
+* The rover needs to be able to receive and process high level tasks, e.g. collect item X from
+  location A and take it to location B, where location definitions may be fuzzy, e.g. a description
+  rather than an exact coordinate.
+* The rover needs to be able to communicate the plan for achieving the provided goal and provide
+  progress updates while it executes the task.
+* The rover should be able to understand a, potentially limited, form of natural language.
+
+### Requirement: Navigation
+
+The high level requirement is:
+
+    The rover will be able transport cargo from a given start location to a given destination
+    location using a self determined trajectory that takes into account the safety of any humans,
+    animals and the cargo.
+
+This requirement comes with a number of limitations. Specifically:
+
+1) **Limitation:** The rover will be able to pick up cargo from locations with a minimum usable
+  area equivalent to 100% of the size of the rover and the cargo combined.
+1) **Limitation:** The rover will be able to navigate tight turns
+1) **Limitation:** Assume that the maximum velocity on sloped ground will be no more than
+  **2.0 m/s**. The velocity on flat ground may be higher.
+1) **Limitation:** Assume that the maximum slope angle for transports with the maximum weight
+  will be no more than **15 degrees**.
+1) **Limitation:** The rover will be consider having reached its destination if it is no more than
+  0.05 meters away from it.
+
+Translating this requirement with the limitations leads to the following engineering demands:
+
+* Trajectory planning, i.e. path planning with a time / velocity / acceleration component
+* Stability planning in relation to the trajectory, and the ability to adjust the trajectory based
+  on the stability demands
+* Dynamic detection of in-appropriate paths, e.g. detecting inappropriate slopes while moving and
+  being able to update the planned trajectory with the information
+* Cargo status monitoring, specifically for the stability perspective
+* all wheel steering, with 360 degree rotation. Allows both tight turns as well as in place rotations
+  and crab moves, which may all be necessary for accurate placement
+* Trajectory planning needs to take into account the provided limitations on performance as well as
+  structural limits and limits on the drive and steering system.
+* Construction of the drive and steering system should be such that the location of the rover can
+  be achieved to the required accuracy.
+
+### Requirement: Carrying cargo
+
+The high level requirement is:
+
+    The rover must be able to carry cargo with a maximum weight of **50.0 kg** with a minimum
+    bounding box of **0.60m x 0.40m x 0.30m (L x W x H)**. This weight and size allows the rover to
+    carry a reasonable size crate with contents.
+
+This requirement comes with a number of limitations. Specifically:
+
+1) **Limitation:** The rover will not be able to load or unload the cargo. It is assumed that a
+  human operator will handle the safe and secure loading, securing and unloading of the cargo.
+
+Translating this requirement with the limitations leads to the following engineering demands:
+
+### Requirement: Communication
+
+1) The rover will be able to communicate status and progress.
+
+### Requirement: Construction
+
+1) The rover will be easy to construct and maintain
+
+
+* Repair / replacement
+* How will it fail
+* FMEA -> Failure Mode Effects Criticality Analysis -> Try to predict failures before they happen
+
+## Design / Shape
+
+Based on the requirements specified before we can start making decisions about the shape, structure,
+mechanics, electronics and software of the rover.
+
+* Structure
+  * Impact reduction
+* Drive
+* Steering
+  * control type / steering type
+* Sensors
+* Navigation control
+* Trajectory planning
+* Electrical - Data & power
+
+
+
+
+
+
+
 ## General
 
-* What needs to be repaired / replaced
-* how will it fail
+
 * How to deal with tolerances
-* Rover inertia?
-* Wheel inertia
-* Steering power
 * Braking power
 * Pick-up of cargo
   * From sides without falling over
-* FMEA -> Failure Mode Effects Cricicallity Analysis -> Try to predict failures before they happen
 * stability
   * Stability while lifting / lowering
 * Brakes + hold power for on the hill / when loading
 * System redundancy
 * Monitoring
 * Wheel slip detection
-* CAD -> Should inform:
-  * Electrical
-  * Centre of Gravity / Center of intertia etc
-  * Structural
-  * ROS / Gazebo
-* Inspiration
-  * SPMT - Self-propelled modular transporter: https://www.mammoet.com/equipment/transport/self-propelled-modular-transporter/spmt/
 
 ## Design
 
@@ -42,7 +150,8 @@ The engineering document describes the choices made for the different parts of t
   the potential harm in collisions and ensure enough reaction / braking time it is sensible to limit
   the maximum speed and acceleration.
   * Maximum velocity: **2.5 m/s**
-  * Maximum acceleration: **1.0 m/s**
+  * Maximum acceleration: **1.0 m/s^2**
+  * Maximum deceleration: **1.5 m/s^2**
 
 ## Safety
 
@@ -57,7 +166,7 @@ The engineering document describes the choices made for the different parts of t
 ## Drive module
 
 * taper lock bushing
-* Suspension for individual wheels. At 4.0 m/s hitting anything will be nasty because the swing arms are large with
+* Suspension for individual wheels. At 2.5 m/s hitting anything will be nasty because the swing arms are large with
   heavy weights at the end (the wheels + motors)
   * Telescopic drive shafts exist. We might be able to create something like that ourselves
     * Could have a rectangular shaft inside another rectangular shaft with sliders. As long as there
@@ -66,7 +175,6 @@ The engineering document describes the choices made for the different parts of t
       expecting to have to change the ride height extremely quickly
       * Note that this approach could bind if the height changes while there's torque on the system
         (because torque causes friction etc.)
-
 
 ### Electronics for motors
 

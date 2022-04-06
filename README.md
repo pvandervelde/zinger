@@ -5,7 +5,7 @@ carries heavy or unwieldy loads.
 
 ## Purpose
 
-The purpose for CrateRover is to liberate humans from having to carry heavy or unwieldy loads
+The purpose for CrateRover is to assist humans by carring heavy or unwieldy loads
 over uneven terrain. The rover will be able to navigate uneven terrain with a load in
 a safe manner, without being a danger to humans, animals, property or the cargo.
 
@@ -17,41 +17,21 @@ The following are the must-have requirements for the rover.
 
 1) The CrateRover is designed to cooperate with human operators. As such it will behave in ways
    that prevent any damage to humans, animals, property and the cargo.
-   1) The rover will be able to detect the presence of humans and animals. Motion will be stopped
-      if there is a possibility of damage.
-   1) The rover will provide ways to detect danger and stop any motion in progress in a safe manner.
-   1) The rover will provide means for humans to safely stop the robot at any point in time which,
-     when engaged, will stop all motion immediately. When the stop is reset movement will continue in
-     a safe manner.
 1) The rover will be able to receive and action requests to take given cargo from one location
-   to another. The request will come to the rover in natural language.
-   1) The rover will be able to communicate the plan for achieving the provided goal.
-   1) In case of task interruption the rover will be capable of revising the plan in order to achieve
-      the goal.
+   to another. The request may come via a number of channels, some of those using natural language.
 1) The rover must be able to carry cargo with a maximum weight of **50.0 kg** with a minimum
    bounding box of **0.60m x 0.40m x 0.30m (L x W x H)**. This weight and size allows the rover to
    carry a reasonable size crate with contents.
-   1) **Limitation:** Assume that the height of the rover and cargo will be smaller than the minimum
-      height of any obstacles. In other words the rover will not need to take heights into account
-      while it navigates.
-   1) **Limitation:** Assume that the length and width of the cargo will not be greater than the
-      length and width of the rover respectively. In other words the rover will not take into
-      account the dimensions of the cargo while it navigates.
    1) **Limitation:** The rover will not be able to load or unload the cargo. It is assumed that a
       human operator will handle the safe and secure loading, securing and unloading of the cargo.
 1) The rover will be able transport cargo from a given start location to a given destination
-   location.
-   1) The rover will be able to navigate from its current position to the current
-      location of the cargo. Path finding may be done either in advance or while moving.
-   1) The rover will be able to pick up cargo from locations with a minimum usable area equivalent
-      to 100% of the size of the rover and the cargo combined.
-   1) Once the cargo is loaded and secured the rover will be able to navigate to the destination
-      location. Path finding may be done either in advance or while moving.
-   1) The rover will be able to navigate tight turns
-   1) Upon arrival at the destination the rover will be able to position itself in an orientation
-      that simplifies the unloading.
-   1) **Limitation:** Assume that the maximum velocity on flat ground will be no more than
-      **2.0 m/s**. The velocity on sloped ground may be reduced.
+   location using a self determined trajectory that takes into account the safety of any humans,
+   animals and the cargo.
+   1) **Limitation:** The rover will be able to pick up cargo from locations with a minimum usable
+      area equivalent to 100% of the size of the rover and the cargo combined.
+   1) **Limitation:** The rover will be able to navigate tight turns
+   1) **Limitation:** Assume that the maximum velocity on sloped ground will be no more than
+      **2.0 m/s**. The velocity on flat ground may be higher.
    1) **Limitation:** Assume that the maximum slope angle for transports with the maximum weight
       will be no more than **15 degrees**.
    1) **Limitation:** The rover will be consider having reached its destination if it is no more than
@@ -66,12 +46,9 @@ The following are the must-have requirements for the rover.
    help will be done in natural language and specific. Such that the human operator can quickly
    determine what needs to be done.
 1) The rover will be able to cooperate with other rovers to carry large and oversize loads to the
-   destination location.
-   1) The rovers will collaborate to move the cargo safely and keeping in mind the stability limits
-      for the cargo. Any issues with cargo stability and safety will be reported to human operators
-      before and during the journey.
-
-## ????
+   destination location. The rovers will collaborate to move the cargo safely and keeping in mind
+   the stability limits for the cargo. Any issues with cargo stability and safety will be reported
+   to human operators before and during the journey.
 
 ## Project risks
 
@@ -103,6 +80,7 @@ areas of risk, starting with the highest risk area.
   * Software performance to ensure rapid responses to changes.
   * Path finding and goal achieving algorithms which allow the rover to transport its cargo to the
     destination in a safe and efficient way.
+  * Swerve control
 * **Design and construction of the steering & suspension system** - The steering and suspension
   system is one of the key parts of the CrateRover. Additionally it is probably the most complicated
   part. The risk factors for the steering and suspension system are:
@@ -123,8 +101,6 @@ areas of risk, starting with the highest risk area.
   * The selection of the electronic components to control the motors.
 
 ## Design decisions
-
-
 
 ### Rover structure
 
