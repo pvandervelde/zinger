@@ -61,14 +61,15 @@ This requirement comes with a number of limitations. Specifically:
 
 Translating this requirement with the limitations leads to the following engineering demands:
 
-* Trajectory planning, i.e. path planning with a velocity and acceleration component
-* Stability planning in relation to the trajectory, and the ability to adjust the trajectory based
-  on the stability demands
+* The rover will be able to plan a trajectory, i.e. a path with a velocity and acceleration components,
+  from the start position to the goal position.
+* The trajectory planning will take into account the stability of the cargo and rover at any point
+  on the trajectory.
 * Static and dynamic detection of in-appropriate paths, e.g. detecting inappropriate slopes while
-  moving and being able to update the planned trajectory with the information
-* Cargo status monitoring, specifically for the stability perspective
-* all wheel steering, with 360 degree rotation. Allows both tight turns as well as in place rotations
-  and crab moves, which may all be necessary for accurate placement
+  moving and being able to update the planned trajectory with the information.
+* The rover will be able to monitor the status of the cargo, specifically for the stability perspective.
+* The rover will possess all-wheel steering, with 360 degree rotation. This allows both tight turns
+  as well as in place rotations and crab moves, which may all be necessary for accurate placement.
 * Trajectory planning needs to take into account the provided limitations on performance as well as
   structural limits and limits on the drive and steering system.
 * Construction of the drive and steering system should be such that the location of the rover can
@@ -91,6 +92,7 @@ Translating this requirement with the limitations leads to the following enginee
 
 * The maximum cargo weight is 50 kg
 * The rover should at least be able to carry a box of size 0.60m x 0.40m x 0.30m
+* The rover will provide a means of securing the cargo
 
 ### Must-Have Requirement: Environments
 
@@ -107,12 +109,12 @@ Translating this requirement leads to the following engineering demands:
   * Asphalt
   * Hard packed dirt
   * Sand
-  * Mud
+  * Light mud
 * The rover is shielded as much as possible from ingress of foreign materials into the sensitive
   components of the rover.
 * The rover will provide easy ways for foreign materials to be removed from the rover, either
-  automatically or with the assistance of an operator
-* It should be possible to clean the rover without damaging it
+  automatically or with the assistance of an operator.
+* It should be possible to clean the rover without damaging it or the operator doing the cleaning.
 
 ### Must-Have Requirement: Communication
 
@@ -148,10 +150,11 @@ The high level requirement is:
 
 Translating this requirement leads to the following engineering demands:
 
-* The rover should be able to determine the shape and size of the cargo
-* The rover should be able to determine the position of the cargo relative to its own chassis
+* The rover should be able to determine the shape and size of the cargo.
+* The rover should be able to determine the position of the cargo relative to its own chassis.
 * Trajectory planning should take into account the larger foot print of the rover with cargo, including
-  turning radius and slope start and end
+  turning radius and slope start and end.
+* The rover will provide means of securing oversized cargo.
 
 ### Nice-To-Have Requirement: Request assistance
 
@@ -180,15 +183,52 @@ The high level requirement is:
 
 Translating this requirement leads to the following engineering demands:
 
-* The rover will be able to communicate with other rovers
-* The rover will be able to determine which other rovers are able to form a team
+* The rover will be able to communicate with other rovers.
+* The rover will be able to determine which other rovers are able to form a team.
 * The rovers will be able to create a plan. This plan will include the tasks for each rover.
-* While performing the task the rovers will coordinate amongst themselves
+* While performing the task the rovers will coordinate amongst themselves.
 
 
 
 
-## Design / Shape
+
+
+
+## Sections
+
+* Components
+  * Drive system
+  * Chassis
+  * Electronics
+  * Electrical --> Power / data
+  * Sensors
+* Software
+  * Architecture
+    * Capabilities
+    * Decision tree vs state machine
+    * Fault analysis / handling
+    * Which ROS nodes --> Capabilities
+    * Connectivity between nodes
+    * Data flow
+    * Data processing
+    * Task planning
+  * Algorithms
+    * SLAM
+    * Path planning
+    * Vision
+    * Language processing
+  * Controllers
+    * Steering and drive --> Probably a single controller because steering and drive are strongly
+      connected in swerve
+    * Sensors
+
+
+
+
+
+
+
+## Design
 
 Based on the requirements specified before we can start making decisions about the shape, structure,
 mechanics, electronics and software of the rover.
@@ -249,9 +289,17 @@ mechanics, electronics and software of the rover.
   * Safe ways to halt
   * Ways to minimize damage in case of failure
     * If the rover is going to crash, attempt to move in a way that minimizes damage to people, animals and the cargo
+  * Failure to make goal
+    * Depends on the reason
+      * Goal isn't reachable --> Inform the humans
+      * Failure of some sub-system --> Either stop, or return to base?
+      * Battery running low --> Back to charge station + inform human
 
 * FMEA -> Failure Mode Effects Criticality Analysis -> Try to predict failures before they happen
 * How to deal with tolerances
+  * Tolerance for fit etc.
+  * Tolerance for the final parts, e.g. how much can the frame be out of square without influence on
+    the robots behaviour
 * Braking power
 * Pick-up of cargo
   * From sides without falling over
@@ -269,6 +317,19 @@ mechanics, electronics and software of the rover.
   * Obstacle avoidance update rate (Hz)
   * Response times for changes to goals etc.
 
+
+
+### Navigation
+
+* Need some form of path planning. In general there is a global planner and a local one. The global
+  planner determines a route in advance and the local planner tries to follow that route while dealing
+  with obstacles, either static or dynamic
+* Swerve has the advantage that we can turn the robot body in any direction while continuing along
+  the same path, i.e. the orientation of the robot body is decoupled from the direction of motion
+* For our path planners this means that we can turn the robot body to move past obstacles.
+  * This could be especially important for cases where the rover is carrying an oversized load
+* Additionally when dealing with hills the decoupling could mean that we can keep the robot in the most
+  stable position (e.g. front facing up hill) while still moving along the slope
 
 ## Safety
 
@@ -347,7 +408,7 @@ mechanics, electronics and software of the rover.
   * http://ais.informatik.uni-freiburg.de/teaching/ws11/robotics2/pdfs/rob2-04-robot-architectures.pdf
   * https://swerveroboticsystems.github.io/DDR/Software/Software.pdf
 * ROS + Simulation
-* Fault tolerance:
+* Fault tolerance - of software issues:
   * https://hal-lirmm.ccsd.cnrs.fr/lirmm-01241181/document
   * https://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.218.9945&rep=rep1&type=pdf
 * Safety: http://www.es.mdh.se/pdf_publications/5663.pdf
@@ -369,6 +430,14 @@ mechanics, electronics and software of the rover.
   * For turns we need to calculate the maximum speeds, both for wheel maximum speed
     and also for wheel direction reversals and cargo / rover minimum radius / tip over etc.
   * Trajectory planning - Path planning with a time component that describes the different velocities
+  * Keep in mind state-of-charge. Potentially don't accept missions that are too long
+  * Have multiple path planning algorithms. Some that use a complete map and some that allow unknown
+    terrain. Switch between the algorithms.
+    * Might be worth having some kind of selection method for selecting the best path / trajectory
+      planning system
+  * Find some way of getting a rough global map and then use reactive planning to go places
+    The global map will allow users to request a location, while the reactive planning allows the
+    robot to avoid obstacles
 * Communication
   * Push
   * Pull
@@ -407,6 +476,18 @@ mechanics, electronics and software of the rover.
   * Navigation
   * Odometry
 * Error handling
+
+### Software - Architecture
+
+* Safety layer
+  * Check if there are humans / animals in our path
+  * Check if our cargo is safe, and will be safe in our next movements
+* Failure handler
+  * Predictive system for failures, e.g. low battery, path planning with hills / drop-offs etc.
+* Task planning
+  * How to get from where we are to where we wanting to be
+    * With and without a map
+    * With dynamic obstacles
 
 ## Electrical system - Power and data
 
