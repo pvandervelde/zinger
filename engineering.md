@@ -14,6 +14,7 @@ The motor selection chapter discusses the motors that were chosen to drive the r
 
 There are two motors to select (initially), the drive motor that propels the rover and the steering
 motor which turns the wheel assembly so that the rover can turn.
+
 #### Drive motor
 
 The drive motor is selected to be a **Brushless DC motor** because these are smaller, more efficient and experience
@@ -248,6 +249,19 @@ speed, battery life etc.
   * SPMT - Self-propelled modular transporter: https://www.mammoet.com/equipment/transport/self-propelled-modular-transporter/spmt/
 
 
+## Navigation
+
+* High level commands for motors are normally a velocity and an angle / direction which are then translated into
+  rotational velocity and direction for the motors. However for a swerve drive we have more degrees of freedom so
+  the high level commands can specify a velocity vector (where is the rover going) and a 'pointing' vector (where
+  is the rover pointing). At a lower level this can be translated into a rotation and a velocity, combined with the
+  final pointing direction.
+  * From there we need to work out the rotational direction of each wheel, based on where we want to go and the
+    speed at which we want to change direction (steer in the same direction vs front and back steering in the
+    opposite direction)
+* Need trajectory planning - Create a path to the goal, but also deal with the need to smoothly change the wheel
+  speed and direction. Additionally for a swerve drive we also need to figure out what direction we need to face in
+  * Temporal planning of movement direction, rotations, and the direction the robot is facing
 ## Software:
 
 * Communication
@@ -305,3 +319,12 @@ speed, battery life etc.
   a lot of detections, this will overload our processing. In the open field we can
 * When reading rotation speeds for the wheels you need to read off the wheels if you have a diff,
   because otherwise you don't know how much the wheels have moved
+
+
+## LED Colors
+
+* Red - Power
+* Green - Data transfer
+* Blue -
+* Orange - Motor activated
+* Yellow - Sensor activated
