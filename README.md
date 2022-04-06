@@ -123,7 +123,8 @@ areas of risk, starting with the highest risk area.
 
 ### Rover structure
 
-* Structure
+* The rover structure will consist of aluminium extrusions as they are easy to obtain, cut to length
+  and connect.
 
 ### Motion
 
@@ -168,33 +169,15 @@ areas of risk, starting with the highest risk area.
     build.
 * Suspension - The first version of the rover will not have a suspension.
 * Power - The first version of the rover will be all electric
+* Motion control - The first version of the rover will be controlled by the user. No autonomous
+  drive will be provided.
 
 ### Electronics
 
-* Sensors to detect presence of humans / animals
-
+* Sensors - The first version of the rover will only have sensors used to control the motors.
 * communication
-  * Status lights on the rover will indicate the current state of the rover.
+  * Status lights on the rover will indicate the current state of the rover.y
     * *Green light - solid:* Available for work.
     * *Orange light - solid:* Working on a task.
     * *Orange light - blinking:* Configuring or processing task information.
     * *Red light - blinking:* - Error state. Human intervention needed.
-  * Networking
-
-## Roadmap
-
-* Steering system MVPs
-  * Simple steering + drive for single unit
-  * Software to control single unit
-  * Test program to verify accuracy of system
-  * Test bench to fully test a single unit
-* Steering system MVP - 2
-  * Build 4 steering units and connect them via a simple frame
-  * Update the software to control all 4 units
-  * Update the test program to verify the accuracy of the system
-* Electrical system
-  * learn electronics
-  * Power & data
-  * Battery
-* Software
-  * ROS + Simulation
