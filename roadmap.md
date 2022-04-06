@@ -18,15 +18,28 @@ To see progress as quickly as possible and constantly
 
 Can use SCUTTLE for a lot of the software testing etc.
 
-* Virtual robot driving to learn how to move a robot
-  * Turtlebot
-  * Virtual SCUTTLE
-
 * Virtual navigation with SCUTTLE in a simulator
   * Test drive code
   * Test navigation and learn how it works
 
 * Different test environments for testing trajectory planning and navigation
+  * Automation in order to test things
+    * Compare velocity / acceleration / position
+
+* Different path planning / navigation methods
+  * Global planning methods
+  * Local planning methods
+  * Reactive planning
+  * Determine what we want from a planning algorithm
+    * Work with the limitations of the rover (kintematics etc.)
+    * Robust - Should be able to deal with unexpected obstacles etc.
+    * Reliable - It should consistently get the robot to the goal
+    * Adaptable - It should be able to adapt to changing conditions / environment
+    * Efficient - It should be able to find the shortest path
+
+* Trajectory planning with moving obstacles
+  * Initially predictable path, both straight and curved
+  * Then introduce random movements
 
 * Implement a bumper and ultrasound sensors to SCUTTLE
 
@@ -34,22 +47,26 @@ Can use SCUTTLE for a lot of the software testing etc.
 
 * Goal behaviour tested with SCUTTLE
 
-* Create simple single wheel swerve in code and drive it, learn to connect motors etc.
+* Communication of SCUTTLE with humans
+  * Lights for indicating driving direction and modes
+  * Some kind of app to communicate commands to the rover
+  * The ability of the rover to send status updates back
+  * Allow the rover to ask questions etc
+
+* ROS with 4 wheel steering - Use a virtual model from somewhere
 
 * Simple swerve model in simulator, manual steering
   * Initially use 2 wheel steering
-  * Switch to 4 wheel steering, but only oposing
+  * Switch to 4 wheel steering, but only opposing
   * Allow 4 wheel steering + crab
-
-* Add uncertainty to the model
-
-* Trajectory planning with moving obstacles
-  * Initially predictable path, both straight and curved
-  * Then introduce random movements
 
 * Swerve navigation
 
 * Swerve trajectory planning
+
+* Add uncertainty to the model
+
+* Create simple single wheel swerve in code and drive it, learn to connect motors etc.
 
 * Create a bench with a single cheap motor * Test driving via software
   * Simple steering for a single unit
