@@ -16,12 +16,16 @@ There are two motors to select (initially), the drive motor that propels the rov
 motor which turns the wheel assembly so that the rover can turn.
 #### Drive motor
 
+The drive motor is selected to be a **Brushless DC motor** because these are smaller, more efficient and experience
+less wear.
+
 #### Steering motor
 
 
 
 
 
+#### Misc
 
 
 
@@ -52,7 +56,7 @@ motor which turns the wheel assembly so that the rover can turn.
   * Gearboxes
     * https://www.andymark.com/products/cim-sport-options
     * https://www.vexrobotics.com/versaplanetary.html
-  * CVT is possible for for the time being we don't care too much about efficiency. That will come later
+  * CVT is possible but for for the time being we don't care too much about efficiency. That will come later
 
 * Drive motor -> Power + speed + controller. Ideally fewer parts is better
 * Steering motor -> Power + accuracy. Ideally fewer parts is better
@@ -180,3 +184,12 @@ motor which turns the wheel assembly so that the rover can turn.
 
 Improve the ratio between value and cost, either by reducing cost or improving value. Value can be carrying capacity,
 speed, battery life etc.
+
+
+## Other
+
+* Can use a differential if we want two wheels per bogie
+
+* What needs to be repaired / replaced
+* how will it fail
+* How to deal with tolerances
