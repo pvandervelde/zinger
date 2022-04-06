@@ -1,16 +1,17 @@
 # CrateRover
 
-This document records the specifications for the CrateRover, a mobile robot which carries heavy
-or unwieldy loads.
-
+This document records the specifications for the CrateRover, an autonomous mobile robot which
+carries heavy or unwieldy loads.
 
 ## Purpose
 
 The purpose for CrateRover is to liberate humans from having to carry heavy or unwieldy loads
-over semi-flat terrain. The rover will be able to navigate mildly uneven terrain with a load in
+over uneven terrain. The rover will be able to navigate uneven terrain with a load in
 a safe manner, without being a danger to humans, animals, property or the cargo.
 
 ## Requirements
+
+### Must have requirements
 
 The following are the must-have requirements for the rover.
 
@@ -18,10 +19,15 @@ The following are the must-have requirements for the rover.
    that prevent any damage to humans, animals, property and the cargo.
    1) The rover will be able to detect the presence of humans and animals. Motion will be stopped
       if there is a possibility of damage.
-   1) The rover will possess at least 1 mobility stop (m-stop) which, when engaged, will stop
-      all motion immediately. When the mobility stop is reset movement will continue with
-      a delay. During the delay the rover will ascertain that no danger exists to humans or animals
-      if the motion were to continue.
+   1) The rover will provide ways to detect danger and stop any motion in progress in a safe manner.
+   1) The rover will provide means for humans to safely stop the robot at any point in time which,
+     when engaged, will stop all motion immediately. When the stop is reset movement will continue in
+     a safe manner.
+1) The rover will be able to receive and action requests to take given cargo from one location
+   to another. The request will come to the rover in natural language.
+   1) The rover will be able to communicate the plan for achieving the provided goal.
+   1) In case of task interruption the rover will be capable of revising the plan in order to achieve
+      the goal.
 1) The rover must be able to carry cargo with a maximum weight of **50.0 kg** with a minimum
    bounding box of **0.60m x 0.40m x 0.30m (L x W x H)**. This weight and size allows the rover to
    carry a reasonable size crate with contents.
@@ -51,9 +57,21 @@ The following are the must-have requirements for the rover.
    1) **Limitation:** The rover will be consider having reached its destination if it is no more than
       0.05 meters away from it.
 1) The rover will be able to communicate status and progress.
-
 1) The rover will be easy to construct and maintain
 
+### Nice to have requirements
+
+1) The rover will be able to carry an oversize load safely to the destination.
+1) The rover will be able to request assistance from a human operator if required. The request for
+   help will be done in natural language and specific. Such that the human operator can quickly
+   determine what needs to be done.
+1) The rover will be able to cooperate with other rovers to carry large and oversize loads to the
+   destination location.
+   1) The rovers will collaborate to move the cargo safely and keeping in mind the stability limits
+      for the cargo. Any issues with cargo stability and safety will be reported to human operators
+      before and during the journey.
+
+## ????
 
 ## Project risks
 
@@ -67,18 +85,6 @@ In order to increase the changes of making the CrateRover project successful it 
 investigate the areas that form the greatest risk for the project first. The following are the
 areas of risk, starting with the highest risk area.
 
-* **Design and construction of the steering & suspension system** - The steering and suspension
-  system is one of the key parts of the CrateRover. Additionally it is probably the most complicated
-  part. The risk factors for the steering and suspension system are:
-  * Attaching the assembly to the frame such that it allows both propulsion and steering.
-  * Construction of the assembly such that it is easy to construct and maintain while being
-    assembled with sufficient accuracy.
-  * Software control of the assembly.
-* **Selection of the drive and steering motors** - The steering and drive motors need to be appropriately
-  sized for the loads they are required to handle. The risk factors for the selection of the
-  drive and steering motors are:
-  * The sizing of the appropriate motor and gearing to deliver the required velocities and torque.
-  * The selection of the electronic components to control the motors.
 * **Electrical system** - The sizing, construction and safety of the electrical system are important
   to ensure that the CrateRover can safely perform to the required demands. The risk factors for the
   electrical system are:
@@ -97,29 +103,28 @@ areas of risk, starting with the highest risk area.
   * Software performance to ensure rapid responses to changes.
   * Path finding and goal achieving algorithms which allow the rover to transport its cargo to the
     destination in a safe and efficient way.
+* **Design and construction of the steering & suspension system** - The steering and suspension
+  system is one of the key parts of the CrateRover. Additionally it is probably the most complicated
+  part. The risk factors for the steering and suspension system are:
+  * Attaching the assembly to the frame such that it allows both propulsion and steering.
+  * Construction of the assembly such that it is easy to construct and maintain while being
+    assembled with sufficient accuracy.
+  * Software control of the assembly.
 * **Design of the chassis** - The chassis holds all the parts together while distributing the loads
   from the cargo and motion. The risk factors for the chassis are:
   * Sizing of the chassis parts such that they are able to handle the loads put on them without
     excessive deformation.
   * Assembly of the chassis and attaching the other components such that they are easy to
     assemble and maintain.
+* **Selection of the drive and steering motors** - The steering and drive motors need to be appropriately
+  sized for the loads they are required to handle. The risk factors for the selection of the
+  drive and steering motors are:
+  * The sizing of the appropriate motor and gearing to deliver the required velocities and torque.
+  * The selection of the electronic components to control the motors.
 
 ## Design decisions
 
-* Dimensions: The minimal dimensions for the cargo are **0.60m * 0.40m * 0.30m (length * width * height)**.
-  If the rover is that size or bigger then the rover dimensions control the bounding box (except for
-  height) for path finding and collision calculations. Additionally having a rover that is slightly
-  bigger than the cargo will make it easier to place the cargo on the rover. Thus the rover will have
-  the following minimum dimensions.
-  * Length: minimal 0.60 m -> 0.60m / 0.65m
-  * Width: minimal 0.40m -> 0.40m / 0.45m
-  * Height: Depends on wheel size + structure
-* The minimum rover speed is **2.0 m/s** while carrying cargo over level terrain. In order to reduce
-  the potential harm in collisions and ensure enough reaction / braking time it is sensible to limit
-  the maximum speed and acceleration.
-  * Maximum velocity: **2.5 m/s**
-  * Maximum acceleration: **1.0 m/s**
-* Bumpers on all sides to reduce damage in case of hitting anything.
+
 
 ### Rover structure
 
@@ -138,7 +143,7 @@ areas of risk, starting with the highest risk area.
       of wheels
     * Need to be able to traverse uneven terrain and climb slopes in all directions.
   * Possibilities
-    * Wheel numbers: 3, 4, 6, 8. Any less is unstable, any more is more complicated and more expensive.
+    * Wheel numbers: 4, 6, 8. Any less is unstable, any more is more complicated and more expensive.
     * Caster wheels for non-driven wheels
   * Will be using 4 identical wheels which minimizes the complications and cost. Additionally using
     four wheels provides a larger stability envelope.

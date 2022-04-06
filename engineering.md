@@ -2,83 +2,81 @@
 
 The engineering document describes the choices made for the different parts of the rover.
 
-## Motor selection
+## General
 
-The motor selection chapter discusses the motors that were chosen to drive the rover.
+* What needs to be repaired / replaced
+* how will it fail
+* How to deal with tolerances
+* Rover inertia?
+* Wheel inertia
+* Steering power
+* Braking power
+* Pick-up of cargo
+  * From sides without falling over
+* FMEA -> Failure Mode Effects Cricicallity Analysis -> Try to predict failures before they happen
+* stability
+  * Stability while lifting / lowering
+* Brakes + hold power for on the hill / when loading
+* System redundancy
+* Monitoring
+* Wheel slip detection
+* CAD -> Should inform:
+  * Electrical
+  * Centre of Gravity / Center of intertia etc
+  * Structural
+  * ROS / Gazebo
+* Inspiration
+  * SPMT - Self-propelled modular transporter: https://www.mammoet.com/equipment/transport/self-propelled-modular-transporter/spmt/
 
-* Type of motors
-* Heat control
-* Power / Current control
+## Design
 
-### Selection
+* Dimensions: The minimal dimensions for the cargo are **0.60m * 0.40m * 0.30m (length * width * height)**.
+  If the rover is that size or bigger then the rover dimensions control the bounding box (except for
+  height) for path finding and collision calculations. Additionally having a rover that is slightly
+  bigger than the cargo will make it easier to place the cargo on the rover. Thus the rover will have
+  the following minimum dimensions.
+  * Length: minimal 0.60 m -> 0.60m / 0.65m
+  * Width: minimal 0.40m -> 0.40m / 0.45m
+  * Height: Depends on wheel size + structure
+* The minimum rover speed is **2.0 m/s** while carrying cargo over level terrain. In order to reduce
+  the potential harm in collisions and ensure enough reaction / braking time it is sensible to limit
+  the maximum speed and acceleration.
+  * Maximum velocity: **2.5 m/s**
+  * Maximum acceleration: **1.0 m/s**
 
-There are two motors to select (initially), the drive motor that propels the rover and the steering
-motor which turns the wheel assembly so that the rover can turn.
+## Safety
 
-#### Drive motor
+* Bumpers on all sides to reduce damage in case of hitting anything.
+* Sensors for detecting obstacles. When approaching an obstacle, either turn away from it or
+  slow down and come to a stop near the obstacle
 
-The drive motor is selected to be a **Brushless DC motor** because these are smaller, more efficient and experience
-less wear.
+## Parts
 
-#### Steering motor
+* Drive modules
 
-
-
-
-
-#### Misc
-
-
-
-
-* Brushless (see: https://motors.vex.com/brushed-brushless)
-  * Smaller
-  * Less wear because there are no brushes
-  * More expensive
-  * More efficient
-* Using a Hall sensor for motor control, or better a Hall sensor for low speed and sensorless for high speed
-  * Good at torque at low speed, and handling high dynamic loads
-* If possible find an 'Outrunner' BLDC. This is where the outside of the motor turns. It's better for torque / low speed
-* Power distribution done by Field oriented control
-* Heat control? We need the motors to be able to run over a long period of time without it overheating
-  * Heatsink
-  * Cooling
-* Power / Current control -> don't want to draw too much power
-* gearing
-  * CVT is apparently possible
-* Motor controller
-
-* Don't attach things to the motor shaft if they put a radial load on the shaft because of fatigue
-
-* Gears
-  * If we need 90 degree gears
-    * https://www.instructables.com/90-Degree-Adapter-for-VexPro-VersaPlanetary-Gearbo/
-    * https://www.vexrobotics.com/217-6293.html
-  * Gearboxes
-    * https://www.andymark.com/products/cim-sport-options
-    * https://www.vexrobotics.com/versaplanetary.html
-  * CVT is possible but for for the time being we don't care too much about efficiency. That will come later
+## Drive module
 
 * taper lock bushing
+* Suspension for individual wheels. At 4.0 m/s hitting anything will be nasty because the swing arms are large with
+  heavy weights at the end (the wheels + motors)
+  * Telescopic drive shafts exist. We might be able to create something like that ourselves
+    * Could have a rectangular shaft inside another rectangular shaft with sliders. As long as there
+      are enough supports the torque should be transferred without issue. Also we don't necessarily care
+      a lot about the amount of sliding friction because the wheel assembly has some weight and we're not
+      expecting to have to change the ride height extremely quickly
+      * Note that this approach could bind if the height changes while there's torque on the system
+        (because torque causes friction etc.)
 
-* Drive motor -> Power + speed + controller. Ideally fewer parts is better
-* Steering motor -> Power + accuracy. Ideally fewer parts is better
-  * DC motor
-  * Full rotation servo
-  * Stepper motor
 
-## Electronics for motors
+### Electronics for motors
 
 * Motor drives
 * Speed sensors
 * Shunt regulator - Handles overvoltage if a motor steps down etc.
 * Slew rate generator - how fast / slow can you change the motor speed -> Because gearboxes don't like quick changes
 
-## Structure
 
-* 1109 Series goRAIL
-
-## Steering system - Mechanics
+### Steering system - Mechanics
 
 * Co-axial rotations
 * Drive motor position
@@ -111,22 +109,8 @@ less wear.
       * Noisy at high speed
       * Need lubrication
       * A herringbone or helical gear would be most efficient but those are expensive
+  * Use belts for the drive system and gears for the steering
   * Should really have a cover over the bottom so that we don't get dirt in the drive system
-
-## Steering system MVP - Single unit steering, no drive
-
-* Simple steering for a single unit
-* Software to control angle of the unit
-* Software to control the calibration of the unit
-* Test bench to test unit rotation
-* Mobility stop
-
-## Steering system MVP - Single unit steering and drive
-
-* Simple steering + drive for single unit
-* Software to control single unit
-* Test program to verify accuracy of system
-* Test bench to fully test a single unit
 
 ## Software
 
@@ -151,34 +135,6 @@ less wear.
   * https://medium.com/robotics-weekends/2d-mapping-using-google-cartographer-and-rplidar-with-raspberry-pi-a94ce11e44c5
 * Misc
   * https://team900.org/labs/
-
-## Electrical system - Power and data
-
-* Distributed power architecture
-  * https://www.digikey.co.nz/en/articles/why-and-how-to-use-a-component-based-distributed-power-architecture-for-robotics
-  * https://newsite.ctr-electronics.com/power-distribution-panel/
-* Wiring: https://www.firstinspires.org/sites/default/files/uploads/resource_library/ftc/robot-wiring-guide.pdf
-* Battery
-* Wiring for data
-  * Either EtherCAT or CAN. CAN seems to be the most widely supported and has great resilience against disturbances
-    * See: https://www.botblox.io/blogs/learn/what-s-the-best-communication-bus-for-robots-and-drones and others
-
-
-## Steering system MVP - All units steering + frame to attach to
-
-* Build 4 steering units and connect them via a simple frame
-* Update the software to control all 4 units
-* Update the test program to verify the accuracy of the system
-
-## Electronics - board
-
-## Electronics - sensors
-
-* Laser ground sensor (like a laser mouse) for ground tracking and speed / rotation
-
-
-## Software
-
 * Path generation
   * smooth path generation using splines
   * Ideally have limit outsides for obstacles
@@ -187,83 +143,7 @@ less wear.
     the same on both sides of the way point
   * For turns we need to calculate the maximum speeds, both for wheel maximum speed
     and also for wheel direction reversals and cargo / rover minimum radius / tip over etc.
-
-
-## Value Engineering
-
-Improve the ratio between value and cost, either by reducing cost or improving value. Value can be carrying capacity,
-speed, battery life etc.
-
-
-## Other
-
-* Can use a differential if we want two wheels per bogie
-
-* What needs to be repaired / replaced
-* how will it fail
-* How to deal with tolerances
-
-
-
-
-
-## Notes:
-
-* We need to be able to accelerate when going up the hill otherwise we can't get going
-* Need to figure out what our maximum force can be on the ground before we slip (can we even go up the hill?)
-* Work out the torgue levels for the motors for each wheel
-* Work out the power levels for the motors for each wheel
-
-
-## Further:
-
-* Rover inertia?
-* Wheel inertia
-* Steering power
-* Braking power
-* Pick-up of cargo
-  * From sides without falling over
-* FMEA -> Failure Mode Effects Cricicallity Analysis -> Try to predict failures before they happen
-* stability
-  * Stability while lifting / lowering
-
-
-## Design:
-
-* Brakes + hold power for on the hill / when loading
-* Suspension for individual wheels. At 4.0 m/s hitting anything will be nasty because the swing arms are large with heavy weights at the end (the wheels + motors)
-  * Telescopic drive shafts exist. We might be able to create something like that ourselves
-    * Could have a rectangular shaft inside another rectangular shaft with sliders. As long as there
-      are enough supports the torque should be transferred without issue. Also we don't necessarily care
-      a lot about the amount of sliding friction because the wheel assembly has some weight and we're not
-      expecting to have to change the ride height extremely quickly
-* System redundancy
-* Monitoring
-* Wheel slip detection
-* CAD -> Should inform:
-  * Electrical
-  * Centre of Gravity / Center of intertia etc
-  * Structural
-  * ROS / Gazebo
-* Inspiration
-  * SPMT - Self-propelled modular transporter: https://www.mammoet.com/equipment/transport/self-propelled-modular-transporter/spmt/
-
-
-## Navigation
-
-* High level commands for motors are normally a velocity and an angle / direction which are then translated into
-  rotational velocity and direction for the motors. However for a swerve drive we have more degrees of freedom so
-  the high level commands can specify a velocity vector (where is the rover going) and a 'pointing' vector (where
-  is the rover pointing). At a lower level this can be translated into a rotation and a velocity, combined with the
-  final pointing direction.
-  * From there we need to work out the rotational direction of each wheel, based on where we want to go and the
-    speed at which we want to change direction (steer in the same direction vs front and back steering in the
-    opposite direction)
-* Need trajectory planning - Create a path to the goal, but also deal with the need to smoothly change the wheel
-  speed and direction. Additionally for a swerve drive we also need to figure out what direction we need to face in
-  * Temporal planning of movement direction, rotations, and the direction the robot is facing
-## Software:
-
+  * Trajectory planning - Path planning with a time component that describes the different velocities
 * Communication
   * Push
   * Pull
@@ -286,7 +166,8 @@ speed, battery life etc.
     * Hardware interaction
     * Processing
     * Goal level
-  * Lower layers run constantly + interupts / blocks from high level (see: https://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.110.809&rep=rep1&type=pdf)
+  * Lower layers run constantly + interrupts / blocks from high level (see: https://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.110.809&rep=rep1&type=pdf)
+    * decision tree approach
   * Middleware / Comms
 * Configuration management -> Pushing new software versions, new commands etc.
   * Default way of pushing changes
@@ -294,16 +175,19 @@ speed, battery life etc.
 * Links
   * https://robops.org/manifesto
 * Sensors
-  * Leaky integrators everywhere
+  * Leaky integrators everywhere --> slowly acquire fault states
 
+## Electrical system - Power and data
 
-## Electronics
-
-* Modules
-  * Processing
-  * PID / Control
-  * Batteries
-* Eventually use busses for power / data so that we can replace bits
+* Distributed power architecture
+  * https://www.digikey.co.nz/en/articles/why-and-how-to-use-a-component-based-distributed-power-architecture-for-robotics
+  * https://newsite.ctr-electronics.com/power-distribution-panel/
+* Wiring: https://www.firstinspires.org/sites/default/files/uploads/resource_library/ftc/robot-wiring-guide.pdf
+* Battery
+* Wiring for data
+  * Either EtherCAT or CAN. CAN seems to be the most widely supported and has great resilience against disturbances
+    * See: https://www.botblox.io/blogs/learn/what-s-the-best-communication-bus-for-robots-and-drones and others
+* Power and data busses: Easy decoupling / replacing
 * Safety switches
   * Global
   * Local
@@ -311,20 +195,56 @@ speed, battery life etc.
   * Depower motor circuits
   * Depower logic circuits
 
+## Electronics - board
 
-## Sensors
+* Probably need a dedicated board for orchestrating the different modules because they will need to
+  be synchronised. Need some kind of real time control and fault detection
+  * Each module has at least 1 motor controller (for 2 motors) and some kind of controller board
+    that tells the motor controller(s) what to do
+  * Need to feedback current rotation rates and positions back from the module to the overall
+    system
+  * Would be good to feedback suspension state as well.
 
+## Electronics - sensors
+
+* Laser ground sensor (like a laser mouse) for ground tracking and speed / rotation
+* Combine multiple sensors for travel speeds and rotations
 * Link a LED to each sensor and blink it when the sensor spots something. This is for debugging
 * For IR detectors we may have to change the sensitivity, e.g. when we are in a corner we'll see
   a lot of detections, this will overload our processing. In the open field we can
 * When reading rotation speeds for the wheels you need to read off the wheels if you have a diff,
   because otherwise you don't know how much the wheels have moved
+  * When reading off the wheel note that for slow movement this is probably in accurate unless we
+    have lots of sensor 'points' for a single rotation (but then we might not know where we came from?)
+* Temperature sensors for the motors
 
+### Electronics - Light Colors
 
-## LED Colors
-
-* Red - Power
+* Red - Power, rear light, brake light
 * Green - Data transfer
 * Blue -
-* Orange - Motor activated
+* Orange - Motor activated, direction indicators
 * Yellow - Sensor activated
+* White - head light
+
+Note that the head light, the rear light and the direction indicator are as signal to human operators
+not for other robots
+
+## Value Engineering
+
+Improve the ratio between value and cost, either by reducing cost or improving value. Value can be carrying capacity,
+speed, battery life etc.
+
+### Navigation
+
+* High level commands for motors are normally a velocity and an angle / direction which are then translated into
+  rotational velocity and direction for the motors. However for a swerve drive we have more degrees of freedom so
+  the high level commands can specify a velocity vector (where is the rover going) and a 'pointing' vector (where
+  is the rover pointing). At a lower level this can be translated into a rotation and a velocity, combined with the
+  final pointing direction.
+  * From there we need to work out the rotational direction of each wheel, based on where we want to go and the
+    speed at which we want to change direction (steer in the same direction vs front and back steering in the
+    opposite direction)
+* Need trajectory planning - Create a path to the goal, but also deal with the need to smoothly change the wheel
+  speed and direction. Additionally for a swerve drive we also need to figure out what direction we need to face in
+  * Temporal planning of movement direction, rotations, and the direction the robot is facing
