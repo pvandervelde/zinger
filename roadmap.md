@@ -18,27 +18,11 @@ To see progress in high risk areas as quickly as possible and constantly
   * Different test environments for testing trajectory planning and navigation
     * Automation in order to test things
       * Compare velocity / acceleration / position
-* Get experience with physical robots - Goal: Learn about the differences between simulation and physical. Also understand physical robots. Finally keep things interesting
-  * SLAM for SCUTTLE
-    * Implement a bumper
-    * Implement ultrasound sensors
-  * SLAM using camera's
-    * Add a camera to SCUTTLE
-  * SLAM using TOF
-  * Design tests for Odometry
-  * Real-life navigation with SCUTTLE using ultrasound and bumpers
-* Task planning - Goal: Get a robot to do something useful
-  * Trajectory planning with moving obstacles
-    * Initially predictable path, both straight and curved
-    * Then introduce random movements
-  * Task planning
-    * Request processing
-  * Goal behaviour tested with SCUTTLE
-  * Communication of SCUTTLE with humans
-    * Lights for indicating driving direction and modes
-    * Some kind of app to communicate commands to the rover
-    * The ability of the rover to send status updates back
-    * Allow the rover to ask questions etc
+  * Create ROS noetic RPi image with all the tools
+    * Run ROS as daemon
+    * Handle logs and metrics appropriately
+    * package as ubuntu snap
+    * Auto-update of changes
 * Switch to ROS2 for nav - Goal: learn ROS2 because the ROS2 nav stack is more extensible
   * Different path planning / navigation methods
     * Global planning methods
@@ -52,8 +36,40 @@ To see progress in high risk areas as quickly as possible and constantly
       * Adaptable - It should be able to adapt to changing conditions / environment and able to replan if required
       * Multi-goal - Able to deal with multiple goals / waypoints in a single planning session. Need
         to have smooth transitions between the goals and prescribed positions / orientations at way points
+      * Multiple sensor inputs
       * Able to handle actual robot geometry (not all robots are round)
+      * Able to handle terrain topography - Slopes etc.
+      * Able to find a safe path
+        * Minimal space requirements
+        * Terrain angles
       * Efficient - It should be able to find the shortest path
+* Get experience with physical robots - Goal: Learn about the differences between simulation and physical. Also understand physical robots. Finally keep things interesting
+  * SLAM for SCUTTLE
+    * Implement a bumper
+    * Implement ultrasound sensors
+  * Design tests for Odometry
+  * Design tests for sensors
+    * Bumpers
+    * Sonar
+  * SLAM using camera's
+    * Add a camera to SCUTTLE
+  * SLAM using TOF
+  * Design tests for sensors
+    * Camera
+    * ToF
+  * Real-life navigation with SCUTTLE using ultrasound and bumpers
+* Task planning - Goal: Get a robot to do something useful
+  * Trajectory planning with moving obstacles
+    * Initially predictable path, both straight and curved
+    * Then introduce random movements
+  * Task planning
+    * Request processing
+  * Goal behaviour tested with SCUTTLE
+  * Communication of SCUTTLE with humans
+    * Lights for indicating driving direction and modes
+    * Some kind of app to communicate commands to the rover
+    * The ability of the rover to send status updates back
+    * Allow the rover to ask questions etc.
 * ROS2 with 4 wheel steering - Goal: Get a swerve drive running
   * Simple swerve model in simulator, manual steering
     * Initially use 2 wheel steering
