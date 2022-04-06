@@ -266,6 +266,8 @@ speed, battery life etc.
   * Audit log
 * Links
   * https://robops.org/manifesto
+* Sensors
+  * Leaky integrators everywhere
 
 
 ## Electronics
@@ -281,3 +283,12 @@ speed, battery life etc.
   * Depower sections / whole rover
   * Depower motor circuits
   * Depower logic circuits
+
+
+## Sensors
+
+* Link a LED to each sensor and blink it when the sensor spots something. This is for debugging
+* For IR detectors we may have to change the sensitivity, e.g. when we are in a corner we'll see
+  a lot of detections, this will overload our processing. In the open field we can
+* When reading rotation speeds for the wheels you need to read off the wheels if you have a diff,
+  because otherwise you don't know how much the wheels have moved
