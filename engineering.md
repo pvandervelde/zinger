@@ -194,12 +194,15 @@ Using the engineering demands we can come up with the detailed requirements for 
 make up the rover. For the purposes of this document we split discussion into three parts, the overall
 dimensions and performance, the requirements for the hardware and finally the requirements for the
 software.
+
 The following tree provides an idea of what will be discussed in the following sections.
 
 * Dimensions and performance
+* Safety
 * Hardware
   * Chassis
   * Drive system
+  * Steering system
   * Electronics
   * Electrical
   * Sensors
@@ -227,20 +230,92 @@ The following tree provides an idea of what will be discussed in the following s
 
 ### Dimensions and performance
 
-* The minimum rover speed is **2.0 m/s** while carrying cargo over level terrain. In order to reduce
-  the potential harm in collisions and ensure enough reaction / braking time it is sensible to limit
-  the maximum speed and acceleration.
-  * Maximum velocity: **2.5 m/s**
-  * Maximum acceleration: **1.0 m/s^2**
-  * Maximum deceleration: **1.5 m/s^2**
+The general dimensions and performance requirements for the rover are as follows:
+
 * Dimensions: The minimal dimensions for the cargo are **0.60m * 0.40m * 0.30m (length * width * height)**.
-  If the rover is that size or bigger then the rover dimensions control the bounding box (except for
-  height) for path finding and collision calculations. Additionally having a rover that is slightly
-  bigger than the cargo will make it easier to place the cargo on the rover. Thus the rover will have
-  the following minimum dimensions.
-  * Length: minimal 0.60 m -> 0.60m / 0.65m
-  * Width: minimal 0.40m -> 0.40m / 0.45m
+  The minimum dimensions for the rover will be slightly larger than the minimum cargo dimensions.
+  Stability, structural and performance requirements may increase one or more dimensions of the rover.
+  Thus the rover will have the following minimum dimensions.
+  * Length: minimal 0.65m
+  * Width: minimal 0.45m
   * Height: Depends on wheel size + structure
+* The maximum rover speed is set to be fast enough to move cargo at a reasonable rate while providing
+  the rover with enough time to react when obstacles appear. Based on this the rover should be able
+  to move at **2.0 m/s** in a straight line while carrying cargo over level terrain. Further limitations
+  are set to other speeds and accelerations. The deceleration requirements are set such that the rover
+  can come to a full stop from its maximum velocity in less than 1 meter of distance.
+  * Maximum linear velocity without cargo: **2.0 m/s**
+  * Maximum linear velocity with cargo: **2.0 m/s**
+  * Maximum linear acceleration: **1.0 m/s^2**
+  * Minimum linear deceleration: **4.0 m/s^2**
+  * Minimum linear velocity: **0.10 m/s**
+* The obstacle avoidance update rate (Hz): **TBD**
+* Response times
+  * Object detection: **TBD**
+  * Obstacle response: **TBD**
+
+### Safety
+
+As the rover moves around in a dynamic environment it is paramount that it is able to do so in a safe
+manner. There are many different areas that need to be considered in order to design and build a rover
+that can navigate the world in a safe manner. For the time being these areas and their considerations
+are as follows.
+
+* **Task planning:** Ensure that tasks can be executed safely. This involves determining if the specific
+  cargo can safely be carried, if there is a safe path to transport the cargo from origin to destination,
+  what the minimum and maximum acceleration and deceleration limits are etc.. This information can then
+  be used in other safety related areas to determine their limits. For instance the combined dimensions
+  of rover and cargo may be used by the trajectory planning algorithms to determine a safe path.
+* **Trajectory planning:** To plan a safe trajectory from the origin to the destination, taking into
+  account the conditions of the surroundings and the state of the cargo, e.g. the maximum slope angle,
+  minimum passage size, safe turning radii, safe velocities in areas with traffic etc..
+* **Obstacle detection:** Ensure that all obstacles can be detected in varying conditions
+
+
+* Local path planning: avoid obstacles
+* Status: Being able to detect / prevent unsafe positions / states
+  * Connectivity between electrical systems
+  * Connectivity between data systems
+  * Errors in sensors --> No signal isn't good (but in some cases it means no detections??)
+  * Robot responses to mechanical failure
+    * drive system
+      * Wheel rotation speeds
+      * Belt slippage
+      * Wheel vertical and sideways accelerations
+      * Optical slip-rings and wireless power could be used to get power to
+        the wheel system and data back from sensors around the wheel
+  * Cargo stability
+  * Errors in detection
+  * Sensor disagreements
+  * Loss of connection -> Should be handled without issue. If there is a task running then we continue with that task, safely
+
+* Be visible through colour, lights and sounds
+  * Ideally the sound won't be a continuous beeping noise because that's annoying
+
+* Failure handling
+  * Safe ways to halt / Safe locations to halt
+  * Diagnose and try to remediate
+    * Do a re-calibration,  zero the encoders / motors
+    * Restart bits of the code / hardware
+  * Ways to minimize damage in case of failure
+    * If the rover is going to crash, attempt to move in a way that minimizes damage to people, animals and the cargo
+    * reduce collision / impact loads with bumpers and strapping
+      * Design the bumpers so that they absorb enough energy
+  * Failure to make goal
+    * Depends on the reason
+      * Goal isn't reachable --> Inform the humans
+      * Failure of some sub-system --> Either stop, or return to base?
+      * Battery running low --> Back to charge station + inform human
+
+
+
+* FMEA -> Failure Mode Effects Criticality Analysis -> Try to predict failures before they happen
+
+
+### Hardware
+
+#### General design
+
 * Will be using 4 identical wheels which minimizes the complications and cost. Additionally using
     four wheels provides a larger stability envelope.
   * Diameter: **0.20 m** based on the idea that we want the rover to be able to traverse obstacles
@@ -252,50 +327,19 @@ The following tree provides an idea of what will be discussed in the following s
     maximum traction and controllability. The swerve drive provides the ability for the rover to
     move in all directions. Finally all the wheel units are the same, thus allowing for a modular
     build.
-
-* Set demands on
-  * Velocity - linear, rotational
-  * Acceleration - linear, rotational
-  * Obstacle avoidance update rate (Hz)
-  * Response times for changes to goals etc.
-
-
-* How will it fail
-* Failure detection
-  * Connectivity between electrical systems
-  * Connectivity between data systems
-  * Errors in sensors --> No signal isn't good
-  * Robot responses to mechanical failure
-    * drive system
-      * Wheel rotation speeds
-      * Belt slippage
-      * Wheel vertical and sideways accelerations
-      * Optical slip-rings and wireless power could be used to get power to
-        the wheel system and data back from sensors around the wheel
-  * Cargo stability
-  * Errors in detection
-* Failure handling
-  * Safe ways to halt
-  * Ways to minimize damage in case of failure
-    * If the rover is going to crash, attempt to move in a way that minimizes damage to people, animals and the cargo
-  * Failure to make goal
-    * Depends on the reason
-      * Goal isn't reachable --> Inform the humans
-      * Failure of some sub-system --> Either stop, or return to base?
-      * Battery running low --> Back to charge station + inform human
-* FMEA -> Failure Mode Effects Criticality Analysis -> Try to predict failures before they happen
-
-### Hardware
+  * Maximum speed at which we can turn (i.e. change direction) of the wheel unit: XXXX
+  * Acceleration profiles
 
 #### Chassis
 
 
-* Modular drive system, because we have 4
 
 * Pick-up of cargo
   * From sides without falling over
 * stability
   * Stability while lifting / lowering
+  * Stability while traversing slopes
+  * Stability while maneuvering
 * How to deal with tolerances
   * Tolerance for fit etc.
   * Tolerance for the final parts, e.g. how much can the frame be out of square without influence on
@@ -305,6 +349,7 @@ The following tree provides an idea of what will be discussed in the following s
 
 #### Drive system
 
+* Modular drive system, because we have 4
 * Braking power
 * Brakes + hold power for on the hill / when loading
 * Wheel slip detection
@@ -312,7 +357,7 @@ The following tree provides an idea of what will be discussed in the following s
 * Suspension for individual wheels. At 2.5 m/s hitting anything will be nasty because the swing arms are large with
   heavy weights at the end (the wheels + motors)
   * Telescopic drive shafts exist. We might be able to create something like that ourselves
-    * Could have a rectangular shaft inside another rectangular shaft with sliders. As long as there
+    * Could have a hex / rectangular shaft inside another similar shaped shaft with sliders. As long as there
       are enough supports the torque should be transferred without issue. Also we don't necessarily care
       a lot about the amount of sliding friction because the wheel assembly has some weight and we're not
       expecting to have to change the ride height extremely quickly
@@ -354,6 +399,12 @@ The following tree provides an idea of what will be discussed in the following s
       * A herringbone or helical gear would be most efficient but those are expensive
   * Use belts for the drive system and gears for the steering
   * Should really have a cover over the bottom so that we don't get dirt in the drive system
+
+#### Steering system
+
+* Accuracy
+* Rotational step size (less than 1 degree) - sensors
+* Keeping steering motors aligned - handling drift
 
 #### Electronics
 
@@ -470,6 +521,18 @@ not for other robots
 * Movement and predictability - People are pretty good with predicting smooth movements, but
   bad with jerky movements
 
+* Task planning
+  * Cargo dimensions and weight
+    * Can it safely be carried
+    * Are the dimensions safe for travel
+    * What are the limits for slope angle, velocity, acceleration, deceleration, turning radius, swing radius when
+      turning around the c.o.g.
+  * Origin / destination
+    * Can it safely be loaded, e.g. are we on a steep slope
+    * Is there a safe path from the origin to the destination
+    * Will be iterative with trajectory planning
+  * State of charge - Can we reach the destination and have enough battery charge to get to a
+    charge station
 * Trajectory planning
   * smooth path generation using splines
   * Ideally have limit outsides for obstacles
@@ -519,7 +582,7 @@ not for other robots
     speed and direction. Additionally for a swerve drive we also need to figure out what direction we need to face in
     * Temporal planning of movement direction, rotations, and the direction the robot is facing
 * SLAM / VSLAM
-
+* Object detection
 * What are the performance requirements for the algorithms
 
 #### Controllers
@@ -532,10 +595,9 @@ not for other robots
 
 
 * Sensors
-  * Leaky integrators everywhere --> slowly acquire fault states
+  * Leaky integrators everywhere --> slowly acquire fault states --> Useful to determine if the robot is stuck
 * Modules
   * SLAM -> simultaneous localization and mapping
   * Path planning / Trajectory planning
   * Navigation
   * Odometry
-
