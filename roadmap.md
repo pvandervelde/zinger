@@ -5,6 +5,14 @@ the areas with the highest risk are covered as early as possible in the design a
 process. The following is the current suggested design and implementation order that should reduce
 the project risks.
 
+* Create a bench with a single cheap motor - Test driving via software
+
+* Create a bench with a single cheap motor rotating a structure - Test driving accuracy via software
+
+* Create a bench with two cheap motors rotating and driving a wheel
+
+* Create a frame with 4 steering units with cheap motors
+
 * Motor selection
   * Type of motors
   * Heat control
