@@ -14,6 +14,12 @@ This document describes the risks in the CrateRover project
 ### Hardware
 
 - Suspension system
+- Steering system
+  - https://en.wikipedia.org/wiki/Thrust_bearing
+  - https://en.wikipedia.org/wiki/Tapered_roller_bearing
+  - Accuracy of rotation
+  - Speed of rotation
+  - Construction / assembly
 - Drive system
 - structure
   - Load calculations
@@ -48,6 +54,11 @@ This document describes the risks in the CrateRover project
 
 - Creation of the structure
 - Attachment of drives
+
+## Risk order
+
+- Construction -> Suspension, Steering
+- Electronics
 
 ## Approach
 
