@@ -188,19 +188,20 @@ Translating this requirement leads to the following engineering demands:
 * The rovers will be able to create a plan. This plan will include the tasks for each rover.
 * While performing the task the rovers will coordinate amongst themselves.
 
+## Component requirements
 
+Using the engineering demands we can come up with the detailed requirements for the components that
+make up the rover. For the purposes of this document we split discussion into three parts, the overall
+dimensions and performance, the requirements for the hardware and finally the requirements for the
+software.
+The following tree provides an idea of what will be discussed in the following sections.
 
-
-
-
-
-## Sections
-
-* Components
-  * Drive system
+* Dimensions and performance
+* Hardware
   * Chassis
+  * Drive system
   * Electronics
-  * Electrical --> Power / data
+  * Electrical
   * Sensors
 * Software
   * Architecture
@@ -221,36 +222,17 @@ Translating this requirement leads to the following engineering demands:
     * Steering and drive --> Probably a single controller because steering and drive are strongly
       connected in swerve
     * Sensors
+    * Recovery
+    * Fault handling
 
+### Dimensions and performance
 
-
-
-
-
-
-## Design
-
-Based on the requirements specified before we can start making decisions about the shape, structure,
-mechanics, electronics and software of the rover.
-
-* Structure
-  * Modular
-  * Obvious construction
-  * Impact reduction
-* Drive
-* Steering
-  * control type / steering type
-* Sensors
-  * SLAM
-  * Terrain mapping
-  * Object tracking
-* Navigation control
-* Trajectory planning
-  * Path, velocity and acceleration planning
-  * Object tracking, object path prediction and avoidance
-* Electrical - Data & power
-
-
+* The minimum rover speed is **2.0 m/s** while carrying cargo over level terrain. In order to reduce
+  the potential harm in collisions and ensure enough reaction / braking time it is sensible to limit
+  the maximum speed and acceleration.
+  * Maximum velocity: **2.5 m/s**
+  * Maximum acceleration: **1.0 m/s^2**
+  * Maximum deceleration: **1.5 m/s^2**
 * Dimensions: The minimal dimensions for the cargo are **0.60m * 0.40m * 0.30m (length * width * height)**.
   If the rover is that size or bigger then the rover dimensions control the bounding box (except for
   height) for path finding and collision calculations. Additionally having a rover that is slightly
@@ -259,17 +241,24 @@ mechanics, electronics and software of the rover.
   * Length: minimal 0.60 m -> 0.60m / 0.65m
   * Width: minimal 0.40m -> 0.40m / 0.45m
   * Height: Depends on wheel size + structure
-* The minimum rover speed is **2.0 m/s** while carrying cargo over level terrain. In order to reduce
-  the potential harm in collisions and ensure enough reaction / braking time it is sensible to limit
-  the maximum speed and acceleration.
-  * Maximum velocity: **2.5 m/s**
-  * Maximum acceleration: **1.0 m/s^2**
-  * Maximum deceleration: **1.5 m/s^2**
+* Will be using 4 identical wheels which minimizes the complications and cost. Additionally using
+    four wheels provides a larger stability envelope.
+  * Diameter: **0.20 m** based on the idea that we want the rover to be able to traverse obstacles
+      of 10cm height, i.e. half the tire diameter.
+  * Width: minimum **0.05 m** based on the idea that we want enough surface area to distribute the
+      total weight of rover and cargo over a big enough area to reduce ground pressure.
+* The rover will be steered and driven using a swerve drive, i.e. a drive system in which all
+    wheels are powered and all wheels are able to rotate 360 degrees infinitely. This provides the
+    maximum traction and controllability. The swerve drive provides the ability for the rover to
+    move in all directions. Finally all the wheel units are the same, thus allowing for a modular
+    build.
 
+* Set demands on
+  * Velocity - linear, rotational
+  * Acceleration - linear, rotational
+  * Obstacle avoidance update rate (Hz)
+  * Response times for changes to goals etc.
 
-
-
-## General
 
 * How will it fail
 * Failure detection
@@ -294,70 +283,31 @@ mechanics, electronics and software of the rover.
       * Goal isn't reachable --> Inform the humans
       * Failure of some sub-system --> Either stop, or return to base?
       * Battery running low --> Back to charge station + inform human
-
 * FMEA -> Failure Mode Effects Criticality Analysis -> Try to predict failures before they happen
-* How to deal with tolerances
-  * Tolerance for fit etc.
-  * Tolerance for the final parts, e.g. how much can the frame be out of square without influence on
-    the robots behaviour
-* Braking power
+
+### Hardware
+
+#### Chassis
+
+
+* Modular drive system, because we have 4
+
 * Pick-up of cargo
   * From sides without falling over
 * stability
   * Stability while lifting / lowering
-* Brakes + hold power for on the hill / when loading
-* System redundancy
-* Monitoring
-* Wheel slip detection
-* Movement and predictability - People are pretty good with predicting smooth movements, but
-  bad with jerky movements
-* Set demands on
-  * Velocity - linear, rotational
-  * Acceleration - linear, rotational
-  * Obstacle avoidance update rate (Hz)
-  * Response times for changes to goals etc.
-
-
-### Structure
-
+* How to deal with tolerances
+  * Tolerance for fit etc.
+  * Tolerance for the final parts, e.g. how much can the frame be out of square without influence on
+    the robots behaviour
 * The rover structure will consist of aluminium extrusions as they are easy to obtain, cut to length
   and connect.
 
-### Navigation
+#### Drive system
 
-* Need some form of path planning. In general there is a global planner and a local one. The global
-  planner determines a route in advance and the local planner tries to follow that route while dealing
-  with obstacles, either static or dynamic
-* Swerve has the advantage that we can turn the robot body in any direction while continuing along
-  the same path, i.e. the orientation of the robot body is decoupled from the direction of motion
-* For our path planners this means that we can turn the robot body to move past obstacles.
-  * This could be especially important for cases where the rover is carrying an oversized load
-* Additionally when dealing with hills the decoupling could mean that we can keep the robot in the most
-  stable position (e.g. front facing up hill) while still moving along the slope
-* High level commands for motors are normally a velocity and an angle / direction which are then translated into
-  rotational velocity and direction for the motors. However for a swerve drive we have more degrees of freedom so
-  the high level commands can specify a velocity vector (where is the rover going) and a 'pointing' vector (where
-  is the rover pointing). At a lower level this can be translated into a rotation and a velocity, combined with the
-  final pointing direction.
-  * From there we need to work out the rotational direction of each wheel, based on where we want to go and the
-    speed at which we want to change direction (steer in the same direction vs front and back steering in the
-    opposite direction)
-* Need trajectory planning - Create a path to the goal, but also deal with the need to smoothly change the wheel
-  speed and direction. Additionally for a swerve drive we also need to figure out what direction we need to face in
-  * Temporal planning of movement direction, rotations, and the direction the robot is facing
-
-## Safety
-
-* Bumpers on all sides to reduce damage in case of hitting anything.
-* Sensors for detecting obstacles. When approaching an obstacle, either turn away from it or
-  slow down and come to a stop near the obstacle
-
-## Parts
-
-* Drive modules
-
-## Drive module
-
+* Braking power
+* Brakes + hold power for on the hill / when loading
+* Wheel slip detection
 * taper lock bushing
 * Suspension for individual wheels. At 2.5 m/s hitting anything will be nasty because the swing arms are large with
   heavy weights at the end (the wheels + motors)
@@ -368,17 +318,9 @@ mechanics, electronics and software of the rover.
       expecting to have to change the ride height extremely quickly
       * Note that this approach could bind if the height changes while there's torque on the system
         (because torque causes friction etc.)
-
-### Electronics for motors
-
 * Motor drives
 * Speed sensors
 * Shunt regulator - Handles overvoltage if a motor steps down etc.
-* Slew rate generator - how fast / slow can you change the motor speed -> Because gearboxes don't like quick changes
-
-
-### Steering system - Mechanics
-
 * Co-axial rotations
 * Drive motor position
   * Motors not on turning section
@@ -412,48 +354,123 @@ mechanics, electronics and software of the rover.
       * A herringbone or helical gear would be most efficient but those are expensive
   * Use belts for the drive system and gears for the steering
   * Should really have a cover over the bottom so that we don't get dirt in the drive system
-* Wheels
-  * Will be using 4 identical wheels which minimizes the complications and cost. Additionally using
-    four wheels provides a larger stability envelope.
-    * Diameter: **0.20 m** based on the idea that we want the rover to be able to traverse obstacles
-      of 10cm height, i.e. half the tire diameter.
-    * Width: minimum **0.05 m** based on the idea that we want enough surface area to distribute the
-      total weight of rover and cargo over a big enough area to reduce ground pressure.
-* Drive and steering
-  * The rover will be steered and driven using a swerve drive, i.e. a drive system in which all
-    wheels are powered and all wheels are able to rotate 360 degrees infinitely. This provides the
-    maximum traction and controllability. The swerve drive provides the ability for the rover to
-    move in all directions. Finally all the wheel units are the same, thus allowing for a modular
-    build.
-* Suspension - Needed --> Because driving in outdoor terrain with a load
-* Power - The first version of the rover will be all electric
-* Motion control - The first version of the rover will be controlled by the user. No autonomous
-  drive will be provided.
 
-## Software
+#### Electronics
+
+* System redundancy
+
+* Red - Power, rear light, brake light
+* Green - Data transfer
+* Blue -
+* Orange - Motor activated, direction indicators
+* Yellow - Sensor activated
+* White - head light
+
+Note that the head light, the rear light and the direction indicator are as signal to human operators
+not for other robots
+
+* Probably need a dedicated board for orchestrating the different modules because they will need to
+  be synchronised. Need some kind of real time control and fault detection
+  * Each module has at least 1 motor controller (for 2 motors) and some kind of controller board
+    that tells the motor controller(s) what to do
+  * Need to feedback current rotation rates and positions back from the module to the overall
+    system
+  * Would be good to feedback suspension state as well.
+* Fault handling for if one of the steering or drive motors doesn't respond
+
+#### Electrial Power and data
+
+* System redundancy
+* Distributed power architecture
+  * <https://www.digikey.co.nz/en/articles/why-and-how-to-use-a-component-based-distributed-power-architecture-for-robotics>
+  * <https://newsite.ctr-electronics.com/power-distribution-panel/>
+* Wiring: <https://www.firstinspires.org/sites/default/files/uploads/resource_library/ftc/robot-wiring-guide.pdf>
+* Battery
+* Wiring for data
+  * Either EtherCAT or CAN. CAN seems to be the most widely supported and has great resilience against disturbances
+    * See: <https://www.botblox.io/blogs/learn/what-s-the-best-communication-bus-for-robots-and-drones> and others
+* Power and data busses: Easy decoupling / replacing
+* Safety switches
+  * Global
+  * Local
+  * Depower sections / whole rover
+  * Depower motor circuits
+  * Depower logic circuits
+* Battery safety
+
+#### Sensors
+
+* System redundancy
+* Monitoring
+* Bumpers on all sides to reduce damage in case of hitting anything.
+* Sensors for detecting obstacles. When approaching an obstacle, either turn away from it or
+  slow down and come to a stop near the obstacle
+* Laser ground sensor (like a laser mouse) for ground tracking and speed / rotation
+* Combine multiple sensors for travel speeds and rotations
+* Link a LED to each sensor and blink it when the sensor spots something. This is for debugging
+* For IR detectors we may have to change the sensitivity, e.g. when we are in a corner we'll see
+  a lot of detections, this will overload our processing. In the open field we can
+* When reading rotation speeds for the wheels you need to read off the wheels if you have a diff,
+  because otherwise you don't know how much the wheels have moved
+  * When reading off the wheel note that for slow movement this is probably in accurate unless we
+    have lots of sensor 'points' for a single rotation (but then we might not know where we came from?)
+* Temperature sensors for the motors
+
+### Software
+
+
+#### Architecture
+
+* Safety layer
+  * Check if there are humans / animals in our path
+  * Check if our cargo is safe, and will be safe in our next movements
+* Failure handler
+  * Predictive system for failures, e.g. low battery, path planning with hills / drop-offs etc.
+* Task planning
+  * How to get from where we are to where we wanting to be
+    * With and without a map
+    * With dynamic obstacles
+* Layers
+  * Hardware interaction
+  * Processing
+  * Goal level
+  * Lower layers run constantly + interrupts / blocks from high level (see: <https://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.110.809&rep=rep1&type=pdf>)
+    * decision tree approach
+  * Middleware / Comms
+  * Decision tree
+
+* Safe guards
+  * Will need a shutdown
+  * Load guards
+  * Roll-over etc.
+  * Human detection / Damage detection
+  * Software security
+    * Encryption
+    * Trust roots
+    * Access permissions
+    * Audits
+
+* Testing
+  * <https://www.chiefdelphi.com/t/best-way-to-test-2910-module-swerve-drive-code/359248>
 
 * Architecture
-  * https://scholar.google.co.nz/scholar?start=70&q=software+architecture+for+autonomous+mobile+robot&hl=en&as_sdt=0,5&as_vis=1
-  * http://eprints.utm.my/id/eprint/18635/1/DayangNorhayatiJawawiPFSKSM2010.pdf
-  * https://arxiv.org/pdf/1811.03563.pdf
-  * http://www.cs.ait.ac.th/~mdailey/papers/Limsoonthrakul-Arch.pdf
-  * http://ais.informatik.uni-freiburg.de/teaching/ws11/robotics2/pdfs/rob2-04-robot-architectures.pdf
-  * https://swerveroboticsystems.github.io/DDR/Software/Software.pdf
-* ROS + Simulation
+  * <https://scholar.google.co.nz/scholar?start=70&q=software+architecture+for+autonomous+mobile+robot&hl=en&as_sdt=0,5&as_vis=1>
+  * <http://eprints.utm.my/id/eprint/18635/1/DayangNorhayatiJawawiPFSKSM2010.pdf>
+  * <https://arxiv.org/pdf/1811.03563.pdf>
+  * <http://www.cs.ait.ac.th/~mdailey/papers/Limsoonthrakul-Arch.pdf>
+  * <http://ais.informatik.uni-freiburg.de/teaching/ws11/robotics2/pdfs/rob2-04-robot-architectures.pdf>
+  * <https://swerveroboticsystems.github.io/DDR/Software/Software.pdf>
 * Fault tolerance - of software issues:
-  * https://hal-lirmm.ccsd.cnrs.fr/lirmm-01241181/document
-  * https://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.218.9945&rep=rep1&type=pdf
-* Safety: http://www.es.mdh.se/pdf_publications/5663.pdf
-* ROS:
-  * https://github.com/ros-controls/ros_controllers/pull/441
-  * https://drive.google.com/file/d/1dXeNoHY7kYR1mJWzMM5BktA5nf9RgFMu/view
-* Testing
-  * https://www.chiefdelphi.com/t/best-way-to-test-2910-module-swerve-drive-code/359248
-* SLAM / Mapping
-  * https://medium.com/robotics-weekends/2d-mapping-using-google-cartographer-and-rplidar-with-raspberry-pi-a94ce11e44c5
-* Misc
-  * https://team900.org/labs/
-* Path generation
+  * <https://hal-lirmm.ccsd.cnrs.fr/lirmm-01241181/document>
+  * <https://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.218.9945&rep=rep1&type=pdf>
+
+#### Algorithms
+
+* Slew rate generator - how fast / slow can you change the motor speed -> Because gearboxes don't like quick changes
+* Movement and predictability - People are pretty good with predicting smooth movements, but
+  bad with jerky movements
+
+* Trajectory planning
   * smooth path generation using splines
   * Ideally have limit outsides for obstacles
   * Make sure that the outside motors are the limit on speeds
@@ -470,36 +487,50 @@ mechanics, electronics and software of the rover.
   * Find some way of getting a rough global map and then use reactive planning to go places
     The global map will allow users to request a location, while the reactive planning allows the
     robot to avoid obstacles
-* Communication
-  * Push
-  * Pull
-  * Pub / Sub
-  * Pub to blackboard (only keep last value)
-* Logs
-* Telemetry
-* Safe guards
-  * Will need a shutdown
-  * Load guards
-  * Roll-over etc.
-  * Human detection / Damage detection
-  * Software security
-    * Encryption
-    * Trust roots
-    * Access permissions
-    * Audits
-* Architecture
-  * Layers
-    * Hardware interaction
-    * Processing
-    * Goal level
-  * Lower layers run constantly + interrupts / blocks from high level (see: https://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.110.809&rep=rep1&type=pdf)
-    * decision tree approach
-  * Middleware / Comms
-* Configuration management -> Pushing new software versions, new commands etc.
-  * Default way of pushing changes
-  * Audit log
-* Links
-  * https://robops.org/manifesto
+  * Determine what we want from a planning algorithm
+    * Work with the limitations of the rover (kinematics etc.), including differential drive and 4W steering
+    * Robust - Should be able to deal with unexpected obstacles etc.
+    * Reliable - It should consistently get the robot to the goal
+    * Smooth - G1 continuous is good, G2 continuous is better. Want smooth movement at all times
+    * Adaptable - It should be able to adapt to changing conditions / environment and able to replan if required
+    * Multi-goal - Able to deal with multiple goals / waypoints in a single planning session. Need
+      to have smooth transitions between the goals and prescribed positions / orientations at way points
+    * Able to handle actual robot geometry (not all robots are round)
+    * Efficient - It should be able to find the shortest path
+* Navigation
+  * Need some form of path planning. In general there is a global planner and a local one. The global
+    planner determines a route in advance and the local planner tries to follow that route while dealing
+    with obstacles, either static or dynamic
+  * Swerve has the advantage that we can turn the robot body in any direction while continuing along
+    the same path, i.e. the orientation of the robot body is decoupled from the direction of motion
+  * For our path planners this means that we can turn the robot body to move past obstacles.
+    * This could be especially important for cases where the rover is carrying an oversized load
+  * Additionally when dealing with hills the decoupling could mean that we can keep the robot in the most
+    stable position (e.g. front facing up hill) while still moving along the slope
+  * High level commands for motors are normally a velocity and an angle / direction which are then translated into
+    rotational velocity and direction for the motors. However for a swerve drive we have more degrees of freedom so
+    the high level commands can specify a velocity vector (where is the rover going) and a 'pointing' vector (where
+    is the rover pointing). At a lower level this can be translated into a rotation and a velocity, combined with the
+    final pointing direction.
+    * From there we need to work out the rotational direction of each wheel, based on where we want to go and the
+      speed at which we want to change direction (steer in the same direction vs front and back steering in the
+      opposite direction)
+  * Need trajectory planning - Create a path to the goal, but also deal with the need to smoothly change the wheel
+    speed and direction. Additionally for a swerve drive we also need to figure out what direction we need to face in
+    * Temporal planning of movement direction, rotations, and the direction the robot is facing
+* SLAM / VSLAM
+
+* What are the performance requirements for the algorithms
+
+#### Controllers
+
+* System redundancy
+* Monitoring
+* Fault handling
+* safety
+  * <https://robops.org/manifesto>
+
+
 * Sensors
   * Leaky integrators everywhere --> slowly acquire fault states
 * Modules
@@ -507,74 +538,4 @@ mechanics, electronics and software of the rover.
   * Path planning / Trajectory planning
   * Navigation
   * Odometry
-* Error handling
 
-### Software - Architecture
-
-* Safety layer
-  * Check if there are humans / animals in our path
-  * Check if our cargo is safe, and will be safe in our next movements
-* Failure handler
-  * Predictive system for failures, e.g. low battery, path planning with hills / drop-offs etc.
-* Task planning
-  * How to get from where we are to where we wanting to be
-    * With and without a map
-    * With dynamic obstacles
-
-## Electrical system - Power and data
-
-* Distributed power architecture
-  * https://www.digikey.co.nz/en/articles/why-and-how-to-use-a-component-based-distributed-power-architecture-for-robotics
-  * https://newsite.ctr-electronics.com/power-distribution-panel/
-* Wiring: https://www.firstinspires.org/sites/default/files/uploads/resource_library/ftc/robot-wiring-guide.pdf
-* Battery
-* Wiring for data
-  * Either EtherCAT or CAN. CAN seems to be the most widely supported and has great resilience against disturbances
-    * See: https://www.botblox.io/blogs/learn/what-s-the-best-communication-bus-for-robots-and-drones and others
-* Power and data busses: Easy decoupling / replacing
-* Safety switches
-  * Global
-  * Local
-  * Depower sections / whole rover
-  * Depower motor circuits
-  * Depower logic circuits
-
-## Electronics - board
-
-* Probably need a dedicated board for orchestrating the different modules because they will need to
-  be synchronised. Need some kind of real time control and fault detection
-  * Each module has at least 1 motor controller (for 2 motors) and some kind of controller board
-    that tells the motor controller(s) what to do
-  * Need to feedback current rotation rates and positions back from the module to the overall
-    system
-  * Would be good to feedback suspension state as well.
-
-## Electronics - sensors
-
-* Laser ground sensor (like a laser mouse) for ground tracking and speed / rotation
-* Combine multiple sensors for travel speeds and rotations
-* Link a LED to each sensor and blink it when the sensor spots something. This is for debugging
-* For IR detectors we may have to change the sensitivity, e.g. when we are in a corner we'll see
-  a lot of detections, this will overload our processing. In the open field we can
-* When reading rotation speeds for the wheels you need to read off the wheels if you have a diff,
-  because otherwise you don't know how much the wheels have moved
-  * When reading off the wheel note that for slow movement this is probably in accurate unless we
-    have lots of sensor 'points' for a single rotation (but then we might not know where we came from?)
-* Temperature sensors for the motors
-
-### Electronics - Light Colors
-
-* Red - Power, rear light, brake light
-* Green - Data transfer
-* Blue -
-* Orange - Motor activated, direction indicators
-* Yellow - Sensor activated
-* White - head light
-
-Note that the head light, the rear light and the direction indicator are as signal to human operators
-not for other robots
-
-## Value Engineering
-
-Improve the ratio between value and cost, either by reducing cost or improving value. Value can be carrying capacity,
-speed, battery life etc.
