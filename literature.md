@@ -26,6 +26,11 @@ such that it can easily move to the next task.
   * How to decide when to replan
 * [2020] A 3D Reactive Navigation Algorithm for Mobile Robots by Using Tentacle-Based Sampling
   * Has some nice references on reactive path planning
+* [2013] Probabilistically safe motion planning to avoid dynamic obstacles with uncertain motion patterns
+  * Good base for newer techniques to base on
+  * Dynamic planning done without but requires full map
+* [2019] A new optimization-driven path planning method with probabilistic completeness for wheeled mobile robots
+  * Energy based cost maps for movement on uneven terrain
 
 
 ## Path smoothing
@@ -41,3 +46,13 @@ When to try to return to the path and when to
 ## SLAM
 
 Need an online slam that can easily
+
+## Task planning
+
+* https://github.com/IntelligentRoboticsLabs/ros2_planning_system
+
+## Trajectory planning
+
+* [2021] Collision-free and dynamically feasible trajectory planning for omnidirectional mobile
+  robots using a novel B-spline based rapidly exploring random tree
+  * Using b-splines and taking into account the dynamic capabilities of the robot
