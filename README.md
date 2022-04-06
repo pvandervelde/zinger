@@ -36,8 +36,11 @@ The following are the must-have requirements for the rover.
       will be no more than **15 degrees**.
    1) **Limitation:** The rover will be consider having reached its destination if it is no more than
       0.05 meters away from it.
+1) The rover will be able to perform its tasks in both an indoor and an outdoor environment. Use
+   in harsh environments should not impede the rover from performing its tasks, nor should it
+   lead to damage.
 1) The rover will be able to communicate status and progress.
-1) The rover will be easy to construct and maintain
+1) The rover will be easy to construct and maintain.
 
 ### Nice to have requirements
 
