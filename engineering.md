@@ -7,7 +7,7 @@ The engineering document describes the choices made for the different parts of t
 In order to determine the shape, size and exact characteristics of the rover we first need to
 translate the requirements into more concrete information.
 
-### Requirement: Cooperating with human operators
+### Must-Have Requirement: Cooperating with human operators
 
 The high level requirement is:
 
@@ -21,8 +21,9 @@ Translating this requirement leads to the following engineering demands:
   obstacles and use this information for obstacle avoidance and trajectory planning
 * The rover should be able to adapt the trajectory due to changes in directions of obstacles
 * The rover will provide safe methods of stopping the rover, either remotely or up close
+* The rover will need to be able to deal with failures in a safe manner
 
-### Requirement: Task planning
+### Must-Have Requirement: Task planning
 
 The high level requirement is:
 
@@ -38,7 +39,7 @@ Translating this requirement leads to the following engineering demands:
   progress updates while it executes the task.
 * The rover should be able to understand a, potentially limited, form of natural language.
 
-### Requirement: Navigation
+### Must-Have Requirement: Navigation
 
 The high level requirement is:
 
@@ -60,11 +61,11 @@ This requirement comes with a number of limitations. Specifically:
 
 Translating this requirement with the limitations leads to the following engineering demands:
 
-* Trajectory planning, i.e. path planning with a time / velocity / acceleration component
+* Trajectory planning, i.e. path planning with a velocity and acceleration component
 * Stability planning in relation to the trajectory, and the ability to adjust the trajectory based
   on the stability demands
-* Dynamic detection of in-appropriate paths, e.g. detecting inappropriate slopes while moving and
-  being able to update the planned trajectory with the information
+* Static and dynamic detection of in-appropriate paths, e.g. detecting inappropriate slopes while
+  moving and being able to update the planned trajectory with the information
 * Cargo status monitoring, specifically for the stability perspective
 * all wheel steering, with 360 degree rotation. Allows both tight turns as well as in place rotations
   and crab moves, which may all be necessary for accurate placement
@@ -73,7 +74,7 @@ Translating this requirement with the limitations leads to the following enginee
 * Construction of the drive and steering system should be such that the location of the rover can
   be achieved to the required accuracy.
 
-### Requirement: Carrying cargo
+### Must-Have Requirement: Carrying cargo
 
 The high level requirement is:
 
@@ -88,18 +89,104 @@ This requirement comes with a number of limitations. Specifically:
 
 Translating this requirement with the limitations leads to the following engineering demands:
 
-### Requirement: Communication
+* The maximum cargo weight is 50 kg
+* The rover should at least be able to carry a box of size 0.60m x 0.40m x 0.30m
 
-1) The rover will be able to communicate status and progress.
+### Must-Have Requirement: Environments
 
-### Requirement: Construction
+The high level requirement is:
 
-1) The rover will be easy to construct and maintain
+    The rover will be able to perform its tasks in both an indoor and an outdoor environment. Use
+    in harsh environments should not impede the rover from performing its tasks, nor should it
+    lead to damage.
+
+Translating this requirement leads to the following engineering demands:
+
+* The rover will be able to traverse different surface types. The minimum expectation is
+  * Concrete
+  * Asphalt
+  * Hard packed dirt
+  * Sand
+  * Mud
+* The rover is shielded as much as possible from ingress of foreign materials into the sensitive
+  components of the rover.
+* The rover will provide easy ways for foreign materials to be removed from the rover, either
+  automatically or with the assistance of an operator
+* It should be possible to clean the rover without damaging it
+
+### Must-Have Requirement: Communication
+
+The high level requirement is:
+
+    The rover will be able to communicate status and progress.
+
+Translating this requirement leads to the following engineering demands:
+
+* The rover needs one or more ways in which it can communicate its status, both for local
+  and remote operators.
+* The rover needs one or more ways in which it can communicate the progress of the current task.
+
+### Must-Have Requirement: Construction
+
+The high level requirement is:
+
+    The rover will be easy to construct and maintain
+
+Translating this requirement leads to the following engineering demands:
+
+* The rover should be made from standard materials and parts as much as possible
+* The rover should be able to be assembled with simple tools
+* The assembly order should be obvious
+* It should be possible to easily remove parts for replacement or repair
+* It should be easy to maintain those parts that need maintenance
+
+### Nice-To-Have Requirement: Oversize loads
+
+The high level requirement is:
+
+    The rover will be able to carry an oversize load safely to the destination.
+
+Translating this requirement leads to the following engineering demands:
+
+* The rover should be able to determine the shape and size of the cargo
+* The rover should be able to determine the position of the cargo relative to its own chassis
+* Trajectory planning should take into account the larger foot print of the rover with cargo, including
+  turning radius and slope start and end
+
+### Nice-To-Have Requirement: Request assistance
+
+The high level requirement is:
+
+    The rover will be able to request assistance from a human operator if required. The request for
+    help will be done in natural language and specific. Such that the human operator can quickly
+    determine what needs to be done.
+
+Translating this requirement leads to the following engineering demands:
+
+* The rover will provide means of communication, via text or voice
+* The rover will be able to determine the cause of any issues to such a degree that it can provide
+  a clear description of the issue to a human operator
+* The rover will be able to provide specific instructions to resolve the issue to a human operator.
+  This includes providing the operator with the appropriate context
+
+### Nice-To-Have Requirement: Multi-rover tasks
+
+The high level requirement is:
+
+   The rover will be able to cooperate with other rovers to carry large and oversize loads to the
+   destination location. The rovers will collaborate to move the cargo safely and keeping in mind
+   the stability limits for the cargo. Any issues with cargo stability and safety will be reported
+   to human operators before and during the journey.
+
+Translating this requirement leads to the following engineering demands:
+
+* The rover will be able to communicate with other rovers
+* The rover will be able to determine which other rovers are able to form a team
+* The rovers will be able to create a plan. This plan will include the tasks for each rover.
+* While performing the task the rovers will coordinate amongst themselves
 
 
-* Repair / replacement
-* How will it fail
-* FMEA -> Failure Mode Effects Criticality Analysis -> Try to predict failures before they happen
+
 
 ## Design / Shape
 
@@ -107,36 +194,22 @@ Based on the requirements specified before we can start making decisions about t
 mechanics, electronics and software of the rover.
 
 * Structure
+  * Modular
+  * Obvious construction
   * Impact reduction
 * Drive
 * Steering
   * control type / steering type
 * Sensors
+  * SLAM
+  * Terrain mapping
+  * Object tracking
 * Navigation control
 * Trajectory planning
+  * Path, velocity and acceleration planning
+  * Object tracking, object path prediction and avoidance
 * Electrical - Data & power
 
-
-
-
-
-
-
-## General
-
-
-* How to deal with tolerances
-* Braking power
-* Pick-up of cargo
-  * From sides without falling over
-* stability
-  * Stability while lifting / lowering
-* Brakes + hold power for on the hill / when loading
-* System redundancy
-* Monitoring
-* Wheel slip detection
-
-## Design
 
 * Dimensions: The minimal dimensions for the cargo are **0.60m * 0.40m * 0.30m (length * width * height)**.
   If the rover is that size or bigger then the rover dimensions control the bounding box (except for
@@ -152,6 +225,50 @@ mechanics, electronics and software of the rover.
   * Maximum velocity: **2.5 m/s**
   * Maximum acceleration: **1.0 m/s^2**
   * Maximum deceleration: **1.5 m/s^2**
+
+
+
+
+## General
+
+* How will it fail
+* Failure detection
+  * Connectivity between electrical systems
+  * Connectivity between data systems
+  * Errors in sensors --> No signal isn't good
+  * Robot responses to mechanical failure
+    * drive system
+      * Wheel rotation speeds
+      * Belt slippage
+      * Wheel vertical and sideways accelerations
+      * Optical slip-rings and wireless power could be used to get power to
+        the wheel system and data back from sensors around the wheel
+  * Cargo stability
+  * Errors in detection
+* Failure handling
+  * Safe ways to halt
+  * Ways to minimize damage in case of failure
+    * If the rover is going to crash, attempt to move in a way that minimizes damage to people, animals and the cargo
+
+* FMEA -> Failure Mode Effects Criticality Analysis -> Try to predict failures before they happen
+* How to deal with tolerances
+* Braking power
+* Pick-up of cargo
+  * From sides without falling over
+* stability
+  * Stability while lifting / lowering
+* Brakes + hold power for on the hill / when loading
+* System redundancy
+* Monitoring
+* Wheel slip detection
+* Movement and predictability - People are pretty good with predicting smooth movements, but
+  bad with jerky movements
+* Set demands on
+  * Velocity - linear, rotational
+  * Acceleration - linear, rotational
+  * Obstacle avoidance update rate (Hz)
+  * Response times for changes to goals etc.
+
 
 ## Safety
 
@@ -284,6 +401,12 @@ mechanics, electronics and software of the rover.
   * https://robops.org/manifesto
 * Sensors
   * Leaky integrators everywhere --> slowly acquire fault states
+* Modules
+  * SLAM -> simultaneous localization and mapping
+  * Path planning / Trajectory planning
+  * Navigation
+  * Odometry
+* Error handling
 
 ## Electrical system - Power and data
 
