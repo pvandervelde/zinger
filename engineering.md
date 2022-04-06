@@ -193,3 +193,91 @@ speed, battery life etc.
 * What needs to be repaired / replaced
 * how will it fail
 * How to deal with tolerances
+
+
+
+
+
+## Notes:
+
+* We need to be able to accelerate when going up the hill otherwise we can't get going
+* Need to figure out what our maximum force can be on the ground before we slip (can we even go up the hill?)
+* Work out the torgue levels for the motors for each wheel
+* Work out the power levels for the motors for each wheel
+
+
+## Further:
+
+* Rover inertia?
+* Wheel inertia
+* Steering power
+* Braking power
+* Pick-up of cargo
+  * From sides without falling over
+* FMEA -> Failure Mode Effects Cricicallity Analysis -> Try to predict failures before they happen
+* stability
+  * Stability while lifting / lowering
+
+
+## Design:
+
+* Brakes + hold power for on the hill / when loading
+* Suspension for individual wheels. At 4.0 m/s hitting anything will be nasty because the swing arms are large with heavy weights at the end (the wheels + motors)
+* System redundancy
+* Monitoring
+* Wheel slip detection
+* CAD -> Should inform:
+  * Electrical
+  * Centre of Gravity / Center of intertia etc
+  * Structural
+  * ROS / Gazebo
+* Inspiration
+  * SPMT - Self-propelled modular transporter: https://www.mammoet.com/equipment/transport/self-propelled-modular-transporter/spmt/
+
+
+## Software:
+
+* Communication
+  * Push
+  * Pull
+  * Pub / Sub
+  * Pub to blackboard (only keep last value)
+* Logs
+* Telemetry
+* Safe guards
+  * Will need a shutdown
+  * Load guards
+  * Roll-over etc.
+  * Human detection / Damage detection
+  * Software security
+    * Encryption
+    * Trust roots
+    * Access permissions
+    * Audits
+* Architecture
+  * Layers
+    * Hardware interaction
+    * Processing
+    * Goal level
+  * Lower layers run constantly + interupts / blocks from high level (see: https://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.110.809&rep=rep1&type=pdf)
+  * Middleware / Comms
+* Configuration management -> Pushing new software versions, new commands etc.
+  * Default way of pushing changes
+  * Audit log
+* Links
+  * https://robops.org/manifesto
+
+
+## Electronics
+
+* Modules
+  * Processing
+  * PID / Control
+  * Batteries
+* Eventually use busses for power / data so that we can replace bits
+* Safety switches
+  * Global
+  * Local
+  * Depower sections / whole rover
+  * Depower motor circuits
+  * Depower logic circuits
