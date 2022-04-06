@@ -265,52 +265,25 @@ are as follows.
   cargo can safely be carried, if there is a safe path to transport the cargo from origin to destination,
   what the minimum and maximum acceleration and deceleration limits are etc.. This information can then
   be used in other safety related areas to determine their limits. For instance the combined dimensions
-  of rover and cargo may be used by the trajectory planning algorithms to determine a safe path.
+  of rover and cargo may be used by the trajectory planning algorithms to determine a safe path. One other
+  important responsibility for the task planning system is to handle the failure to achieve a running
+  task.
 * **Trajectory planning:** To plan a safe trajectory from the origin to the destination, taking into
   account the conditions of the surroundings and the state of the cargo, e.g. the maximum slope angle,
   minimum passage size, safe turning radii, safe velocities in areas with traffic etc..
-* **Obstacle detection:** Ensure that all obstacles can be detected in varying conditions
-
-
-* Local path planning: avoid obstacles
-* Status: Being able to detect / prevent unsafe positions / states
-  * Connectivity between electrical systems
-  * Connectivity between data systems
-  * Errors in sensors --> No signal isn't good (but in some cases it means no detections??)
-  * Robot responses to mechanical failure
-    * drive system
-      * Wheel rotation speeds
-      * Belt slippage
-      * Wheel vertical and sideways accelerations
-      * Optical slip-rings and wireless power could be used to get power to
-        the wheel system and data back from sensors around the wheel
-  * Cargo stability
-  * Errors in detection
-  * Sensor disagreements
-  * Loss of connection -> Should be handled without issue. If there is a task running then we continue with that task, safely
-
-* Be visible through colour, lights and sounds
-  * Ideally the sound won't be a continuous beeping noise because that's annoying
-
-* Failure handling
-  * Safe ways to halt / Safe locations to halt
-  * Diagnose and try to remediate
-    * Do a re-calibration,  zero the encoders / motors
-    * Restart bits of the code / hardware
-  * Ways to minimize damage in case of failure
-    * If the rover is going to crash, attempt to move in a way that minimizes damage to people, animals and the cargo
-    * reduce collision / impact loads with bumpers and strapping
-      * Design the bumpers so that they absorb enough energy
-  * Failure to make goal
-    * Depends on the reason
-      * Goal isn't reachable --> Inform the humans
-      * Failure of some sub-system --> Either stop, or return to base?
-      * Battery running low --> Back to charge station + inform human
-
-
-
-* FMEA -> Failure Mode Effects Criticality Analysis -> Try to predict failures before they happen
-
+* **Obstacle detection:** Ensure that all obstacles can be detected in varying environmental conditions.
+* **Obstacle avoidance:** To plan a safe path around obstacles, whether they are known or unknown, and
+  static or dynamic. The obstacle avoidance process should consider the safe limits for different
+  maneuvers and select the safest of the available options. Additionally the obstacle avoidance system
+  should also be able to handle the case where diverting around an obstacle is no longer possible. In
+  this case the system should determine safe ways and locations to halt the rover.
+* **Rover status:** Being able to detect and alleviate any issues with the rover and its cargo. This
+  includes being able to detect and try to resolve issues with the electrical and data systems, the
+  ability to respond to mechanical issues, sensor failures and the stability of the cargo.
+* **Impact absorption:** While all the other areas aim to avoid failure it is inevitable that
+  eventually the rover will experience a failure, which may lead to a collision with an obstacle.
+  Therefore the design should consider impact absorption with the goal to minimize damage to all
+  parties involved.
 
 ### Hardware
 
@@ -399,6 +372,12 @@ are as follows.
       * A herringbone or helical gear would be most efficient but those are expensive
   * Use belts for the drive system and gears for the steering
   * Should really have a cover over the bottom so that we don't get dirt in the drive system
+* Sensors
+  * Wheel rotation speeds
+    * Belt slippage
+  * Wheel vertical and sideways accelerations
+  * Optical slip-rings and wireless power could be used to get power to
+    the wheel system and data back from sensors around the wheel
 
 #### Steering system
 
@@ -429,6 +408,15 @@ not for other robots
   * Would be good to feedback suspension state as well.
 * Fault handling for if one of the steering or drive motors doesn't respond
 
+* Status: Being able to detect / prevent unsafe positions / states
+  * Electronics disconnections
+  * Errors in sensors --> No signal isn't good (but in some cases it means no detections??)
+  * Robot responses to mechanical failure
+  * Cargo stability
+  * Errors in detection
+  * Sensor disagreements
+  * Loss of connection -> Should be handled without issue. If there is a task running then we continue with that task, safely
+
 #### Electrial Power and data
 
 * System redundancy
@@ -448,6 +436,7 @@ not for other robots
   * Depower motor circuits
   * Depower logic circuits
 * Battery safety
+* Broken circuits
 
 #### Sensors
 
@@ -601,3 +590,22 @@ not for other robots
   * Path planning / Trajectory planning
   * Navigation
   * Odometry
+
+## Design aspects
+
+
+* Failure to make goal
+  * Goal isn't reachable --> Inform the humans
+  * Failure of some sub-system --> Either stop, or return to base?
+  * Battery running low --> Back to charge station + inform human
+
+* Impact absorbtion - Ways to minimize damage in case of failure
+  * If the rover is going to crash, attempt to move in a way that minimizes damage to people, animals and the cargo
+  * reduce collision / impact loads with bumpers and strapping
+    * Design the bumpers so that they absorb enough energy
+    * Design the bumper such that they protect humans / animals / structures from taking a big load
+
+* Be visible through colour, lights and sounds
+  * Ideally the sound won't be a continuous beeping noise because that's annoying
+
+* FMEA -> Failure Mode Effects Criticality Analysis -> Try to predict failures before they happen
