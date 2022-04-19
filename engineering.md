@@ -241,9 +241,10 @@ The general dimensions and performance requirements for the rover are as follows
   * Height: Depends on wheel size + structure
 * The maximum rover speed is set to be fast enough to move cargo at a reasonable rate while providing
   the rover with enough time to react when obstacles appear. Based on this the rover should be able
-  to move at **2.0 m/s** in a straight line while carrying cargo over level terrain. Further limitations
-  are set to other speeds and accelerations. The deceleration requirements are set such that the rover
-  can come to a full stop from its maximum velocity in less than 1 meter of distance.
+  to move at **2.0 m/s** in a straight line while carrying cargo over terrain with maximum
+  slope of **15 degrees**. Further limitations are set to other speeds and accelerations. The
+  deceleration requirements are set such that the rover can come to a full stop from its maximum
+  velocity in less than 1 meter of distance.
   * Maximum linear velocity without cargo: **2.0 m/s**
   * Maximum linear velocity with cargo: **2.0 m/s**
   * Maximum linear acceleration: **1.0 m/s^2**
@@ -287,42 +288,52 @@ are as follows.
 
 ### Hardware
 
-#### General design
+#### General
 
-* Will be using 4 identical wheels which minimizes the complications and cost. Additionally using
-    four wheels provides a larger stability envelope.
+The rover base consists of the several parts. The first part is the chassis, which provides the
+structure that will carry the cargo as well as providing attachment locations for the cargo
+manipulation system, the drive system, and the electric and electronic systems.
+The second part is the drive system which contains the steering and drive motors and provides
+the ability to move the rover in any direction. The third part is the electronic and electrical
+system which includes sensors, batteries and the compute hardware that provides command and control
+over the rover.
+
+As the chassis forms the base of the rover structure it is important that it is designed such that
+the rover is able to perform to the standards provided earlier. The chassis will be made from
+**aluminium extrusions**. This ensures that the chassis is both strong and light enough while it is
+also being easy to assemble and repair.
+
+The combination of the chassis and the drive system determines performance and stability of the
+rover.
+
+* The rover should be stable while carrying cargo on both flat ground and slopes up to **15 degrees**.
+  This requirement applies in both when the rover is parked, as well as when the rover is in motion.
+* When loading or unloading cargo the rover should be stable. Cargo should be able to be picked
+  up from the ground and loaded onto the rover, as well as unloaded from the rover and placed on the
+  ground. On flat ground the rover should be able to pick up cargo from either the left or the right
+  hand side. On sloped ground the rover should only pick up cargo from the high side, i.e. where
+  the ground is higher than the lowest rover wheel. At no point should the rover be in danger of
+  tipping over.
+* The drive system will consist of **4 wheels**, all of which will be **driven** and provide
+  **unlimited steering rotation**. This ensures maximum traction on uneven terrain, provides the
+  ability for the rover  to navigate in situations that require high manoeuvrability, to position
+  itself with high accuracy, and do all of this while also carrying a heavy load. Each of the 4
+  wheels will be attached to their own **drive module**, all of which will be identical for ease
+  of design, assembly and repair. Drive modules should be easy to swap out with minimal tools.
+
+#### Drive system
+
+As indicated the rover will have 4 drive modules, each of which provides one wheel with driving
+torque and infinite steering rotation.
+
   * Diameter: **0.20 m** based on the idea that we want the rover to be able to traverse obstacles
       of 10cm height, i.e. half the tire diameter.
   * Width: minimum **0.05 m** based on the idea that we want enough surface area to distribute the
       total weight of rover and cargo over a big enough area to reduce ground pressure.
-* The rover will be steered and driven using a swerve drive, i.e. a drive system in which all
-    wheels are powered and all wheels are able to rotate 360 degrees infinitely. This provides the
-    maximum traction and controllability. The swerve drive provides the ability for the rover to
-    move in all directions. Finally all the wheel units are the same, thus allowing for a modular
-    build.
   * Maximum speed at which we can turn (i.e. change direction) of the wheel unit: XXXX
   * Acceleration profiles
 
-#### Chassis
 
-
-
-* Pick-up of cargo
-  * From sides without falling over
-* stability
-  * Stability while lifting / lowering
-  * Stability while traversing slopes
-  * Stability while maneuvering
-* How to deal with tolerances
-  * Tolerance for fit etc.
-  * Tolerance for the final parts, e.g. how much can the frame be out of square without influence on
-    the robots behaviour
-* The rover structure will consist of aluminium extrusions as they are easy to obtain, cut to length
-  and connect.
-
-#### Drive system
-
-* Modular drive system, because we have 4
 * Braking power
 * Brakes + hold power for on the hill / when loading
 * Wheel slip detection
@@ -461,6 +472,7 @@ not for other robots
 
 #### Architecture
 
+* Architecture overview --> Some kind of diagram
 * Safety layer
   * Check if there are humans / animals in our path
   * Check if our cargo is safe, and will be safe in our next movements
@@ -503,12 +515,13 @@ not for other robots
 * Fault tolerance - of software issues:
   * <https://hal-lirmm.ccsd.cnrs.fr/lirmm-01241181/document>
   * <https://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.218.9945&rep=rep1&type=pdf>
+* Security
 
 #### Algorithms
 
 * Slew rate generator - how fast / slow can you change the motor speed -> Because gearboxes don't like quick changes
 * Movement and predictability - People are pretty good with predicting smooth movements, but
-  bad with jerky movements
+  bad with jerky movements --> position, velocity, acceleration, jerk (change in acceleration), snap (change in jerk, acceleration of the acceleration)
 
 * Task planning
   * Cargo dimensions and weight
@@ -591,21 +604,36 @@ not for other robots
   * Navigation
   * Odometry
 
-## Design aspects
+## Components
 
 
-* Failure to make goal
-  * Goal isn't reachable --> Inform the humans
-  * Failure of some sub-system --> Either stop, or return to base?
-  * Battery running low --> Back to charge station + inform human
 
-* Impact absorbtion - Ways to minimize damage in case of failure
-  * If the rover is going to crash, attempt to move in a way that minimizes damage to people, animals and the cargo
-  * reduce collision / impact loads with bumpers and strapping
-    * Design the bumpers so that they absorb enough energy
-    * Design the bumper such that they protect humans / animals / structures from taking a big load
+### Hardware
+
+* How to deal with tolerances
+  * Tolerance for fit etc.
+  * Tolerance for the final parts, e.g. how much can the frame be out of square without influence on
+    the robots behaviour
+
+#### Bumper
+
+* Progressive spring
+* Include contact sensor to notify when something contacts
+
 
 * Be visible through colour, lights and sounds
   * Ideally the sound won't be a continuous beeping noise because that's annoying
+
+### Software
+
+### Task planning
+
+* Goal isn't reachable --> Inform the humans
+* Failure of some sub-system --> Either stop, or return to base?
+* Battery running low --> Back to charge station + inform human
+
+#### Obstacle avoidance
+
+* If the rover is going to crash, attempt to move in a way that minimizes damage to people, animals and the cargo
 
 * FMEA -> Failure Mode Effects Criticality Analysis -> Try to predict failures before they happen
