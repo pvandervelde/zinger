@@ -316,85 +316,47 @@ rover.
   tipping over.
 * The drive system will consist of **4 wheels**, all of which will be **driven** and provide
   **unlimited steering rotation**. This ensures maximum traction on uneven terrain, provides the
-  ability for the rover  to navigate in situations that require high manoeuvrability, to position
+  ability for the rover  to navigate in situations that require high maneuverability, to position
   itself with high accuracy, and do all of this while also carrying a heavy load. Each of the 4
   wheels will be attached to their own **drive module**, all of which will be identical for ease
   of design, assembly and repair. Drive modules should be easy to swap out with minimal tools.
 
-#### Drive system
+#### Drive module
 
 As indicated the rover will have 4 drive modules, each of which provides one wheel with driving
 torque and infinite steering rotation.
 
-  * Diameter: **0.20 m** based on the idea that we want the rover to be able to traverse obstacles
-      of 10cm height, i.e. half the tire diameter.
-  * Width: minimum **0.05 m** based on the idea that we want enough surface area to distribute the
-      total weight of rover and cargo over a big enough area to reduce ground pressure.
-  * Maximum speed at which we can turn (i.e. change direction) of the wheel unit: XXXX
-  * Acceleration profiles
-
-
-* Braking power
-* Brakes + hold power for on the hill / when loading
-* Wheel slip detection
-* taper lock bushing
-* Suspension for individual wheels. At 2.5 m/s hitting anything will be nasty because the swing arms are large with
-  heavy weights at the end (the wheels + motors)
-  * Telescopic drive shafts exist. We might be able to create something like that ourselves
-    * Could have a hex / rectangular shaft inside another similar shaped shaft with sliders. As long as there
-      are enough supports the torque should be transferred without issue. Also we don't necessarily care
-      a lot about the amount of sliding friction because the wheel assembly has some weight and we're not
-      expecting to have to change the ride height extremely quickly
-      * Note that this approach could bind if the height changes while there's torque on the system
-        (because torque causes friction etc.)
-* Motor drives
-* Speed sensors
-* Shunt regulator - Handles overvoltage if a motor steps down etc.
-* Co-axial rotations
-* Drive motor position
-  * Motors not on turning section
-    * Inertia is higher if the drive motor turns too. Possibly the rotating parts of the motor
-      also influence the rotation due to gyroscopic forces
-    * Power wires eventually tangled after too many turns
-    * Motor at wheel height is more susceptible to dirt
-    * Reduces clearance because motors take up space
-* Drive motor power transfer
-  * Options
-    * Belts
-      * Easier
-      * Lighter
-      * Allows non-parallel axles
-      * Less efficient
-      * Requires pre-tension
-      * When changing speed or direction there is a lag
-    * Chains
-      * Easier
-      * Lighter
-      * More efficient than belt, but less efficient than gears
-      * Does not require pre-tension
-      * Axles have to be parallel. Little tolerance
-      * When changing speed or direction there is a lag
-    * Gears
-      * Most efficient (if properly set up)
-      * Can transfer large amounts of torque
-      * Need to be over short distance
-      * Noisy at high speed
-      * Need lubrication
-      * A herringbone or helical gear would be most efficient but those are expensive
-  * Use belts for the drive system and gears for the steering
-  * Should really have a cover over the bottom so that we don't get dirt in the drive system
-* Sensors
-  * Wheel rotation speeds
-    * Belt slippage
-  * Wheel vertical and sideways accelerations
-  * Optical slip-rings and wireless power could be used to get power to
-    the wheel system and data back from sensors around the wheel
-
-#### Steering system
-
-* Accuracy
-* Rotational step size (less than 1 degree) - sensors
-* Keeping steering motors aligned - handling drift
+* The diameter of the wheel will be : **0.20 m** based on the idea that we want the rover to be able
+  to traverse obstacles of about 0.05m height, which should be enough to traverse along slightly
+  rough outdoor tracks.
+* Width: minimum **0.05 m** based on the idea that we want enough surface area to distribute the
+    total weight of rover and cargo over a big enough area to reduce ground pressure.
+* The drive motors will be attached to the rover chassis and driving torque will be transferred by
+  mechanical means so as to reduce the inertia of the wheel and to allow for infinite steering rotation
+  of the wheel. As a side benefit this allows placing the motor in a location where it is easier to
+  protect it from dirt.
+* Braking power is supplied by the motors and potentially a brake on the drive shaft. Having brakes
+  attached to the wheel would complicate the wheel assembly, and specifically the steering assembly
+  as the goal is to have a wheel with infinite steering rotation.
+* Each wheel assembly will have independent suspension with a total travel distance of no more than
+  the diameter of the wheel
+* The wheels will be driven by DC electric motors which should provide sufficient torque and
+  rotational velocity to achieve the required carrying capacity for the given terrain.
+* Sensors will be place in a suitable to location to track both the rotational velocity and
+  current position of the wheel, either directly or indirectly, so that wheel odometry can be
+  provided.
+  * If possible sensors and methods used to detect wheel slip should be added
+* Optionally sensors can be applied to the wheel assembly to measure the vertical and horizonal
+  position, velocity and acceleration of the different parts of the module, e.g. the suspension
+  arms etc.
+* Maximum speed at which the wheel can be steered (i.e. change direction) of the wheel
+  unit: **100 - 120 rotations per minute**.
+* The minimum steering accuracy, i.e. the accuracy of the steering angle, should be no
+  less than **1 degree**.
+* The steering system should not be back drivable so as to ensure that a set steering angle
+  will not change due to external factors
+* Methods should be provided for determining the steering angle on start-up without the need
+  to perform zero-ing movements.
 
 #### Electronics
 
