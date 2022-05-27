@@ -23,6 +23,22 @@ To see progress in high risk areas as quickly as possible and constantly
     * Handle logs and metrics appropriately
     * package as ubuntu snap
     * Auto-update of changes
+* Get experience with physical robots - Goal: Learn about the differences between simulation and physical.
+  Also understand physical robots. Finally keep things interesting
+  * SLAM for SCUTTLE
+    * Implement a bumper
+    * Implement ultrasound sensors
+  * Design tests for Odometry
+  * Design tests for sensors
+    * Bumpers
+    * Sonar
+  * SLAM using camera's
+    * Add a camera to SCUTTLE
+  * SLAM using TOF
+  * Design tests for sensors
+    * Camera
+    * ToF
+  * Real-life navigation with SCUTTLE using ultrasound and bumpers
 * Switch to ROS2 for nav - Goal: learn ROS2 because the ROS2 nav stack is more extensible
   * Different path planning / navigation methods
     * Global planning methods
@@ -43,21 +59,6 @@ To see progress in high risk areas as quickly as possible and constantly
         * Minimal space requirements
         * Terrain angles
       * Efficient - It should be able to find the shortest path
-* Get experience with physical robots - Goal: Learn about the differences between simulation and physical. Also understand physical robots. Finally keep things interesting
-  * SLAM for SCUTTLE
-    * Implement a bumper
-    * Implement ultrasound sensors
-  * Design tests for Odometry
-  * Design tests for sensors
-    * Bumpers
-    * Sonar
-  * SLAM using camera's
-    * Add a camera to SCUTTLE
-  * SLAM using TOF
-  * Design tests for sensors
-    * Camera
-    * ToF
-  * Real-life navigation with SCUTTLE using ultrasound and bumpers
 * Task planning - Goal: Get a robot to do something useful
   * Trajectory planning with moving obstacles
     * Initially predictable path, both straight and curved
@@ -82,7 +83,8 @@ To see progress in high risk areas as quickly as possible and constantly
   * Test out in real life
 * Design and build the actual swerve module - Goal: to get our serve module running
   * Create simple single wheel swerve in code and drive it, learn to connect motors etc.
-  * Create a bench with a single cheap motor * Test driving via software
+  * Create a bench with a single cheap motor
+    * Test driving via software
     * Simple steering for a single unit
     * Software to control angle of the unit
     * Software to control the calibration of the unit
