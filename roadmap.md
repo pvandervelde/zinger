@@ -58,7 +58,9 @@ To see progress in high risk areas as quickly as possible and constantly
       * Able to find a safe path
         * Minimal space requirements
         * Terrain angles
+      * Fast - Should be able to decide on a path quickly
       * Efficient - It should be able to find the shortest path
+* Get an arm working
 * Task planning - Goal: Get a robot to do something useful
   * Trajectory planning with moving obstacles
     * Initially predictable path, both straight and curved
