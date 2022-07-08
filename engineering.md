@@ -200,11 +200,10 @@ The following tree provides an idea of what will be discussed in the following s
 * Dimensions and performance
 * Safety
 * Hardware
-  * Chassis
-  * Drive system
-  * Steering system
-  * Electronics
-  * Electrical
+  * General - Chassis
+  * General - Electronics, electrical power and data
+  * Drive module
+  * Loading arm
   * Sensors
 * Software
   * Architecture
@@ -285,10 +284,12 @@ are as follows.
   eventually the rover will experience a failure, which may lead to a collision with an obstacle.
   Therefore the design should consider impact absorption with the goal to minimize damage to all
   parties involved.
+* **User interrupts:** The user should be able to stop the rover at any point both remotely and by
+  physically pressing an emergency stop button.
 
 ### Hardware
 
-#### General
+#### General - chassis
 
 The rover base consists of the several parts. The first part is the chassis, which provides the
 structure that will carry the cargo as well as providing attachment locations for the cargo
@@ -320,6 +321,81 @@ rover.
   itself with high accuracy, and do all of this while also carrying a heavy load. Each of the 4
   wheels will be attached to their own **drive module**, all of which will be identical for ease
   of design, assembly and repair. Drive modules should be easy to swap out with minimal tools.
+
+#### General - Electronics, electrical power and data
+
+The layout and design of the electrical system for a mobile robot is an extensive area that consist
+of many sub-parts. This section will discuss the general design rules for the electrical power system,
+data transfer lines and the layout of the electronics parts.
+
+One of the main requirements for the design of the electrical system is to ensure that the system
+is safe to use and safe to build and maintain. This means that
+
+* The user should both be able to quickly determine if the system is powered and remove the
+  power from the system or sub-systems.
+  * The user should be able to disconnect the power to the entire rover with a single safe action.
+  * The user should be able to quickly see if any part of the system has been energized.
+  * The user should be able to remove power from subsections of the system with a single action.
+  * The user should able to to remove power from the motors and their controllers without removing
+    power from the compute nodes.
+* The user should be able to determine the state of the battery with respect to environmental and
+  charge states, both on the rover as well as remotely.
+* The user should be able to determine the voltage and current for each subsystem, both on the rover
+  and remotely.
+* The circuit design should take into account unsafe behaviour of the components present in the circuit,
+  for instance:
+  * Electrical motor and relay back EMF should be handled so that it will not endanger other components
+  * Input and output pins on compute nodes should be protected against inadvertent use, i.e. input
+    pins should be protected against being used as output pins and visa-versa. Additionally both types
+    of pins should never be exposed to voltages and currents higher than those stated in the
+    specifications for the compute node.
+
+The next part of the design for the electrical system is to make it easy to build, maintain and
+extend.
+
+* The electrical and data system will be constructed from different modules, e.g. drive module(s),
+  sensors, compute module(s), actuators etc..
+* The rover will send power from the battery pack to a power distribution panel from which the
+  different modules can obtain their power. This provides for a central location where power can be
+  turned off, as well as providing a location where individual modules can be depowered.
+* Data wires will be grouped together and routed through dedicated low voltage channels, separated
+  from the 'high voltage' power delivery wires.
+
+With these base requirements defined the next part of the requirements for the electrical system
+can be specified. These are the delivery of electrical power and data signals. Starting with the
+requirements for the delivery of electrical power:
+
+* The rover will be powered by a battery pack that delivers 24V of electrical power. The maximum
+  current and total capacity of the battery are determined by the performance requirements for the
+  rover.
+* The power distribution panel will deliver either 24V or 12V to the modules, depending on what
+  the module needs.
+* Each electrical module will be configured to receive either 24V or 12V.
+* Each module will take care of its own power conditioning to the standards required by the module.
+* Sensors are powered from the module that processes their signals
+* Motors are powered from their specific motor power distribution board
+
+The requirement for the data transfer part of the electrical system are:
+
+* The wiring and protocol for data is either
+  [EtherCAT or CAN](https://www.botblox.io/blogs/learn/what-s-the-best-communication-bus-for-robots-and-drones).
+  CAN is the most widely supported and has great resilience against disturbances
+
+Finally when working with mobile robots it is important to provide suitable indication of the state of the
+robot to the users. It is suggested that the following indicators are used:
+
+* The status of different components will be indicated by different colored LEDs. The use of LEDs
+  provides an indication of the component status while at the same time minimizing the energy
+  usage and complexity. The LED colors have the following meanings:
+  * White - head light
+  * Red - power status; rear light; brake light
+  * Orange - motor activation state; direction indicators; movement alert (blinking)
+  * Yellow - Sensor activated
+  * Green - Data transfer
+  * Blue - N/A
+* The rover will have warning lights indicating that the rover, or part thereof, is moving. Orange
+  flashing LEDs will be used around the rover base when the rover is moving. Individual moving parts
+  will have their own set of orange flashing LEDs when these parts are moving.
 
 #### Drive module
 
@@ -358,19 +434,7 @@ torque and infinite steering rotation.
 * Methods should be provided for determining the steering angle on start-up without the need
   to perform zero-ing movements.
 
-#### Electronics
 
-* System redundancy
-
-* Red - Power, rear light, brake light
-* Green - Data transfer
-* Blue -
-* Orange - Motor activated, direction indicators
-* Yellow - Sensor activated
-* White - head light
-
-Note that the head light, the rear light and the direction indicator are as signal to human operators
-not for other robots
 
 * Probably need a dedicated board for orchestrating the different modules because they will need to
   be synchronised. Need some kind of real time control and fault detection
@@ -381,53 +445,33 @@ not for other robots
   * Would be good to feedback suspension state as well.
 * Fault handling for if one of the steering or drive motors doesn't respond
 
-* Status: Being able to detect / prevent unsafe positions / states
-  * Electronics disconnections
-  * Errors in sensors --> No signal isn't good (but in some cases it means no detections??)
-  * Robot responses to mechanical failure
-  * Cargo stability
-  * Errors in detection
-  * Sensor disagreements
-  * Loss of connection -> Should be handled without issue. If there is a task running then we continue with that task, safely
 
-#### Electrial Power and data
+#### Loading arm
 
-* System redundancy
-* Distributed power architecture
-  * <https://www.digikey.co.nz/en/articles/why-and-how-to-use-a-component-based-distributed-power-architecture-for-robotics>
-  * <https://newsite.ctr-electronics.com/power-distribution-panel/>
-* Wiring: <https://www.firstinspires.org/sites/default/files/uploads/resource_library/ftc/robot-wiring-guide.pdf>
-* Battery
-* Wiring for data
-  * Either EtherCAT or CAN. CAN seems to be the most widely supported and has great resilience against disturbances
-    * See: <https://www.botblox.io/blogs/learn/what-s-the-best-communication-bus-for-robots-and-drones> and others
-* Power and data busses: Easy decoupling / replacing
-* Safety switches
-  * Global
-  * Local
-  * Depower sections / whole rover
-  * Depower motor circuits
-  * Depower logic circuits
-* Battery safety
-* Broken circuits
+* Arm to grab stuff from the ground and put it in the bucket(s)
+
 
 #### Sensors
 
 * System redundancy
 * Monitoring
 * Bumpers on all sides to reduce damage in case of hitting anything.
+* Cliff sensors to detect drop offs
 * Sensors for detecting obstacles. When approaching an obstacle, either turn away from it or
   slow down and come to a stop near the obstacle
 * Laser ground sensor (like a laser mouse) for ground tracking and speed / rotation
 * Combine multiple sensors for travel speeds and rotations
-* Link a LED to each sensor and blink it when the sensor spots something. This is for debugging
 * For IR detectors we may have to change the sensitivity, e.g. when we are in a corner we'll see
   a lot of detections, this will overload our processing. In the open field we can
 * When reading rotation speeds for the wheels you need to read off the wheels if you have a diff,
   because otherwise you don't know how much the wheels have moved
-  * When reading off the wheel note that for slow movement this is probably in accurate unless we
+  * When reading off the wheel note that for slow movement this is probably inaccurate unless we
     have lots of sensor 'points' for a single rotation (but then we might not know where we came from?)
 * Temperature sensors for the motors
+* General temperature / pressure sensor for environmental conditions
+* Each (?) sensor will be paired with a yellow LED, which will light up when the sensor detects
+  something
+* Force sensors in carrying deck to determine weight of cargo and placement of cargo
 
 ### Software
 
@@ -556,6 +600,12 @@ not for other robots
 * Fault handling
 * safety
   * <https://robops.org/manifesto>
+  * Errors in sensors --> No signal isn't good (but in some cases it means no detections??)
+  * Robot responses to mechanical failure
+  * Cargo stability
+  * Errors in detection
+  * Sensor disagreements
+  * Loss of connection -> Should be handled without issue. If there is a task running then we continue with that task, safely
 
 
 * Sensors
@@ -565,6 +615,8 @@ not for other robots
   * Path planning / Trajectory planning
   * Navigation
   * Odometry
+
+
 
 ## Components
 
