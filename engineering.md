@@ -368,6 +368,8 @@ requirements for the delivery of electrical power:
 * The rover will be powered by a battery pack that delivers 24V of electrical power. The maximum
   current and total capacity of the battery are determined by the performance requirements for the
   rover.
+* Charging the battery pack can be done either by taking the battery module out of the rover but also
+  by connecting to the charge port.
 * The power distribution panel will deliver either 24V or 12V to the modules, depending on what
   the module needs.
 * Each electrical module will be configured to receive either 24V or 12V.
@@ -433,11 +435,9 @@ torque and infinite steering rotation.
   will not change due to external factors
 * Methods should be provided for determining the steering angle on start-up without the need
   to perform zero-ing movements.
-
-
-
-* Probably need a dedicated board for orchestrating the different modules because they will need to
-  be synchronised. Need some kind of real time control and fault detection
+* A dedicated compute board will be used to orchestrating the different drive modules so that the
+  drive modules can be be synchronised. This module will need provide real time control and fault
+  detection
   * Each module has at least 1 motor controller (for 2 motors) and some kind of controller board
     that tells the motor controller(s) what to do
   * Need to feedback current rotation rates and positions back from the module to the overall
@@ -449,6 +449,14 @@ torque and infinite steering rotation.
 #### Loading arm
 
 * Arm to grab stuff from the ground and put it in the bucket(s)
+* 4 degrees of freedom
+  * rotate the entire arm
+  * rotate shoulder
+  * rotate elbow
+  * gripper
+  * Assume gripper is gravity directed
+* Try to keep the arm light
+* joint rotation backlash --> ???
 
 
 #### Sensors
@@ -456,10 +464,13 @@ torque and infinite steering rotation.
 * System redundancy
 * Monitoring
 * Bumpers on all sides to reduce damage in case of hitting anything.
+  * Bumpers should wrap around so that they can't get caught on things
+  * Maybe add a pull sensor on the bumper in case a bumper gets caught
 * Cliff sensors to detect drop offs
 * Sensors for detecting obstacles. When approaching an obstacle, either turn away from it or
   slow down and come to a stop near the obstacle
 * Laser ground sensor (like a laser mouse) for ground tracking and speed / rotation
+* IMU
 * Combine multiple sensors for travel speeds and rotations
 * For IR detectors we may have to change the sensitivity, e.g. when we are in a corner we'll see
   a lot of detections, this will overload our processing. In the open field we can
@@ -496,6 +507,12 @@ torque and infinite steering rotation.
     * decision tree approach
   * Middleware / Comms
   * Decision tree
+  * ROS(?) nodes
+    * Can use multiplexers for twist commands and probably also for path / trajectory
+    * Node for generating movement, e.g. move backwards by x amount
+    * Ideally have one node type that translates from trajectory to velocity??
+    * Pay attention to the number of running algorithms --> too many things running is bad for performance
+    * Goal / task node --> High level node that translates goals into tasks
 
 * Safe guards
   * Will need a shutdown
@@ -522,6 +539,9 @@ torque and infinite steering rotation.
   * <https://hal-lirmm.ccsd.cnrs.fr/lirmm-01241181/document>
   * <https://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.218.9945&rep=rep1&type=pdf>
 * Security
+* Performance
+  * Try not to load the compute boards for more than X % so that there is always room for interupts
+    * Maybe no more than 50%?
 
 #### Algorithms
 
