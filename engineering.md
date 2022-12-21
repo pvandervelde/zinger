@@ -11,7 +11,7 @@ translate the requirements into more concrete information.
 
 The high level requirement is:
 
-    The CrateRover is designed to cooperate with human operators. As such it will behave in ways
+    The tBlaze is designed to cooperate with human operators. As such it will behave in ways
     that prevent any damage to humans, animals, property and the cargo.
 
 Translating this requirement leads to the following engineering demands:

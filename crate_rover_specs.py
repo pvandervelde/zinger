@@ -21,7 +21,7 @@ class BoundingBox:
         return Coordinate(self.length_in_meters / 2.0, self.width_in_meters / 2.0, self.height_in_meters / 2.0)
 
 class Cargo:
-    ''' Stores information about an item of cargo transported by the CrateRover. '''
+    ''' Stores information about an item of cargo transported by the tBlaze. '''
 
     def __init__(self, bounding_box: BoundingBox, maximum_weight_in_kg: float):
         self.bounding_box = bounding_box

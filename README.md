@@ -1,11 +1,11 @@
-# CrateRover
+# tBlaze
 
-This document records the specifications for the CrateRover, an autonomous mobile robot which
+This document records the specifications for the tBlaze, an autonomous mobile robot which
 carries heavy or unwieldy loads.
 
 ## Purpose
 
-The purpose for CrateRover is to assist humans by carring heavy or unwieldy loads
+The purpose for tBlaze is to assist humans by carrying heavy or unwieldy loads
 over uneven terrain. The rover will be able to navigate uneven terrain with a load in
 a safe manner, without being a danger to humans, animals, property or the cargo.
 
@@ -15,7 +15,7 @@ a safe manner, without being a danger to humans, animals, property or the cargo.
 
 The following are the must-have requirements for the rover.
 
-1) The CrateRover is designed to cooperate with human operators. As such it will behave in ways
+1) The tBlaze is designed to cooperate with human operators. As such it will behave in ways
    that prevent any damage to humans, animals, property and the cargo.
 1) The rover will be able to receive and action requests to take given cargo from one location
    to another. The request may come via a number of channels, some of those using natural language.
@@ -55,13 +55,13 @@ The following are the must-have requirements for the rover.
 
 ## Project risks
 
-The CrateRover project has a number of areas that pose a high risk of failure. Factors that contribute
+The tBlaze project has a number of areas that pose a high risk of failure. Factors that contribute
 to the risk profile are:
 
 * Complexity in both the underlying field and the design
 * Unfamiliarity with the underlying field
 
-In order to increase the changes of making the CrateRover project successful it is important to
+In order to increase the changes of making the tBlaze project successful it is important to
 investigate the areas that form the greatest risk for the project first. The following are the
 areas of risk, starting with the highest risk area.
 
@@ -78,7 +78,7 @@ areas of risk, starting with the highest risk area.
   * Trajectory planning, path following and location
   * Control of the drive and steering system
 * **Electrical system** - The sizing, construction and safety of the electrical system are important
-  to ensure that the CrateRover can safely perform to the required demands. The risk factors for the
+  to ensure that the tBlaze can safely perform to the required demands. The risk factors for the
   electrical system are:
   * The safety of the electrical system.
   * The sizing and construction of the power system, including charge, storage and discharge
@@ -86,7 +86,7 @@ areas of risk, starting with the highest risk area.
   * The placement of electrical lines such that they are safe to work with and reduce interference
     with other cables to a minimum.
 * **Design and construction of the steering & suspension system** - The steering and suspension
-  system is one of the key parts of the CrateRover. Additionally it is probably the most complicated
+  system is one of the key parts of the tBlaze. Additionally it is probably the most complicated
   part. The risk factors for the steering and suspension system are:
   * Attaching the assembly to the frame such that it allows both propulsion and steering.
   * Construction of the assembly such that it is easy to construct and maintain while being
